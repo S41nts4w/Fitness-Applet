@@ -35,7 +35,7 @@ export class SelectionComponent extends Component {
     }
   }
 
-  class DropDown extends Component {
+ export class DropDown extends Component {
     state = {
       fieldVal: "Value"
     }

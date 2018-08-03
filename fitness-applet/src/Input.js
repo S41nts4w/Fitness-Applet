@@ -32,10 +32,10 @@ export class InputComponent extends Component {
     }
     render() {
       return (
-        <p>
+        <div>
           <input ref="weightPerformer" type="number" placeholder="Kg" />
           <button onClick={(e) => { this.handleButton(); }}>Submit</button>
-        </p>
+        </div>
       )
     }
   }

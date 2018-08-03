@@ -1,66 +1,51 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { userData, workoutData, data } from './Data';
-import { ChartComponent } from './Graphs'
-import { SelectionComponent } from './Selector';
-import { InputComponent } from './Input';
-import { Router, Route } from 'react-router';
+import { Route, Link } from 'react-router-dom';
+import { WorkoutTab } from './WorkOutTab';
+import { PersonalTab } from './PersonalSpace';
+import { VersusTab } from './VersusSpace';
+import { LoginTab } from './LoginTab';
 
 
 class App extends Component {
   state = {
-    currentName: "UserName",
-    currentWorkout: "WorkoutName",
-    dataSet: data.Daniel
-  }
-  componentDidMount() {
-    userData.forEach(name => {
-      workoutData[name] = {};
-    });
+    credentials: "None",
+    accepted: false
   }
 
-  selectName = (name) => {
-    this.setState({
-      currentName: name,
-      dataSet: data[name]
-    });
-  }
-  selectWorkout = (val) => {
-    this.setState({ currentWorkout: val });
-  }
   render() {
-    const { dataSet, currentName, currentWorkout } = this.state;
-    const weight = null;
-    return (
-      <div className="App">
-        <HeaderComponent />
-        <SelectionComponent
-          onUpdatedName={this.selectName}
-          onUpdatedWorkout={this.selectWorkout}
-        />
-        <InputComponent selName={currentName} selWorkout={currentWorkout} />
-        <ChartComponent data={dataSet} />
-      </div>
-    );
+    if (this.state.accepted === false) {
+      return (
+        <div className="App">
+          <HeaderComponent />
+          <LoginTab logIn={(user)=>{this.setState({accepted: user.accepted, credentials: user.credentials});}} />
+        </div>
+      );
+    } else if(this.state.accepted === true) {
+      return (
+        <div className="App">
+          <HeaderComponent />
+            <div>
+              <button>
+              <Link to='/YourWorkout' username={this.state.credentials}>Your Workout</Link>
+              </button>
+              <button>
+              <Link to='/PersonalSpace' username={this.state.credentials}>Personalspace</Link>
+              </button>
+              <button>
+              <Link to='/VersusSpace'>Versusspace</Link>
+              </button>
+              <button onClick={(e)=>{this.setState({accepted: false});}}>Logout</button>
+              <Route path="/YourWorkout" component={WorkoutTab} />
+              <Route path="/PersonalSpace" component={PersonalTab} />
+              <Route path="/VersusSpace" component={VersusTab} />
+            </div>
+        </div>
+      );
+    }
   }
 }
-
-// class Login extends Component{
-
-// }
-
-// class WorkoutTab extends Component{
-
-// }
-
-// class PersonalSpace extends Component{
-
-// }
-
-// class VersusTab extends Component{
-
-// }
 
 class HeaderComponent extends Component {
   render() {

@@ -30,5 +30,7 @@ export const data = {
         { time: "08.08.18", Squat: 65, Press: 45, Bench: 60 }
     ]
 };
+
+
 export let workoutData = {
 }

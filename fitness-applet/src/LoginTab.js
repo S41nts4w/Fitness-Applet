@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button} from 'react-bootstrap';
 
 export class LoginTab extends Component {
     state = {
@@ -10,7 +11,7 @@ export class LoginTab extends Component {
     render() {
         return (
             <div>
-                <button onClick={() => { this.props.logIn(this.state.user) }}>Login</button>
+                <Button onClick={() => { this.props.logIn(this.state.user) }}>Login</Button>
             </div>
         );
     }

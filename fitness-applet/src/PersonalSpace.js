@@ -1,24 +1,22 @@
 import React, { Component } from 'react';
-import { DropDown } from './Selector';
-import { workoutName } from './Data';
-import { InputComponent } from './Input';
+import { data } from './Data';
+import { ChartComponent } from './Graphs';
 
-export class PersonalTab extends Component {
-    state = {
-        userName: "none",
-        workout: "none"
-    }
-    componentDidMount(){
-        this.setState({
-            userName: this.props.userName
-        })
-    }
-    render() {
-        return (
-            <div>
-                    <DropDown options={workoutName} onUpdate={(e)=>{this.setState({workout: e});}} />
-                    <InputComponent selName={this.state.username} selWorkout={this.state.workout}/>
-            </div>
-        );
-    }
+export class PersonalSpace extends Component {
+  state = {
+    dataSet: data["daniel.test@mesaic.co"]
+  }
+  componentDidMount(){
+    this.setState({
+      dataSet: data[this.props.username]
+    })
+  }
+  render() {
+    const { dataSet} = this.state;
+    return (
+      <div>
+        <ChartComponent data={dataSet} />
+      </div>
+    );
+  }
 }

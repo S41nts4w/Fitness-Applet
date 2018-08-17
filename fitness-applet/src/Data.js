@@ -1,36 +1,106 @@
-export const userData = ["daniel.test@mesaic.co", "dennis.test@mesaic.co", "moritz.test@mesaic.co"];
-export const workoutName = ["Squat", "Press", "Bench Press", "Deadlift", "Chin-Ups", "Pull-Ups"];
-
-export const data = {
-    "daniel.test@mesaic.co": [
-        { time: "25.07.18", Squat: 40, Press: 22.5, Bench: 35 },
-        { time: "27.07.18", Squat: 45, Press: 22.5, Bench: 40 },
-        { time: "30.07.18", Squat: 45, Press: 25, Bench: 40 },
-        { time: "01.08.18", Squat: 50, Press: 25, Bench: 45 },
-        { time: "03.08.18", Squat: 55, Press: 25, Bench: 45 },
-        { time: "06.08.18", Squat: 60, Press: 27.5, Bench: 45 },
-        { time: "08.08.18", Squat: 60, Press: 27.5, Bench: 50 }
-    ],
-    "dennis.test@mesaic.co": [
-        { time: "25.07.18", Squat: 30, Press: 22.5, Bench: 35 },
-        { time: "27.07.18", Squat: 35, Press: 22.5, Bench: 40 },
-        { time: "30.07.18", Squat: 40, Press: 25, Bench: 40 },
-        { time: "01.08.18", Squat: 45, Press: 25, Bench: 45 },
-        { time: "03.08.18", Squat: 50, Press: 25, Bench: 45 },
-        { time: "06.08.18", Squat: 50, Press: 27.5, Bench: 45 },
-        { time: "08.08.18", Squat: 55, Press: 27.5, Bench: 50 }
-    ],
-    "moritz.test@mesaic.co": [
-        { time: "25.07.18", Squat: 50, Press: 35, Bench: 55 },
-        { time: "27.07.18", Squat: 55, Press: 40, Bench: 55 },
-        { time: "30.07.18", Squat: 60, Press: 40, Bench: 55 },
-        { time: "01.08.18", Squat: 60, Press: 40, Bench: 55 },
-        { time: "03.08.18", Squat: 60, Press: 45, Bench: 60 },
-        { time: "06.08.18", Squat: 65, Press: 45, Bench: 60 },
-        { time: "08.08.18", Squat: 65, Press: 45, Bench: 60 }
-    ]
+export const userData = {
+    2: {
+        name: "Dennis",
+        sheetScope: "C"
+    },
+    6: {
+        name: "Daniel",
+        sheetScope: "G"
+    },
+    10: {
+        name: "Moritz",
+        sheetScope: "K"
+    },
 };
 
+export let getNames = () => {
+    return Object.values(userData).map(user => user.name);
+}
+
+export let getCell = (user) => {
+    let scope;
+    Object.values(userData).map(id => {
+        if (id.name === user) {
+            scope = id.sheetScope;
+        } return null;
+    })
+    return scope;
+}
+export let workoutName = ["Squat", "Deadlift", "Press", "BenchPress", "ChinUp", "Bent-Over Barbell Row"];
+export let dateTable = [];
+export let dataSheet = [];
+
+
+export const getDateTable = (name) => {
+    if (name !== "none" && name !== "") {
+        dateTable = data[name].map((key, i) => {
+            return key.time;
+        });
+        return dateTable;
+    } return ["none"];
+}
+export const getCellIndex = (date)=>{
+    let index;
+    dateTable.filter((cell, i)=>{
+        if(cell===date){
+            index =  i+3;
+        }return null
+    });
+    return index;
+}
+
+export const fillOfflineSheet = (dataSet, tableName) => {
+    if (tableName !== "") {
+        dataSet.slice(2).map((row, i) => {
+            row.map((cell, j) => {
+                switch (j) {
+                    case 0:
+                        addElementToPersonalData(i, "time", cell, "Dennis");
+                        addElementToPersonalData(i, "time", cell, "Daniel");
+                        addElementToPersonalData(i, "time", cell, "Moritz");
+                        break;
+                    case 2:
+                    case 6:
+                    case 10:
+                        if (!parseWorkoutData(i, tableName, cell, j)) {
+                            return null;
+                        }
+                        break;
+                    default:
+                        return null
+                }
+                return null;
+            }
+            );
+            return null;
+        })
+    }
+}
+
+const parseWorkoutData = (i, tableName, cell, j) => {
+    let celldata = 0;
+    if (cell === "") {
+        return false;
+    } else {
+        celldata = parseFloat(cell);
+    }
+    addElementToPersonalData(i, tableName, celldata, userData[j].name);
+    return true;
+}
+
+
+function addElementToPersonalData(index, newKey, cell, userName) {
+    var personalData = Object.assign({}, data[userName][index]);
+    var newInput = newKey;
+    personalData[newInput] = cell;
+    data[userName][index] = personalData;
+}
+
+export const data = {
+    Dennis: [],
+    Daniel: [],
+    Moritz: []
+}
 
 export let workoutData = {
 }

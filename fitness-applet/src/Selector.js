@@ -15,9 +15,15 @@ export class DropDown extends Component {
     this.setState({ fieldVal: e.target.value });
   }
   render() {
-    let options = this.props.options.map((name) => {
-      return <option key={`option_${name}`} value={name}>{name}</option>;
-    });
+    let options
+    try {
+      options = this.props.options.map((name) => {
+        return <option key={`option_${name}`} value={name}>{name}</option>;
+      });
+    } catch (error) {
+      console.log(error);
+      options = <option key={`option_date`} value="date">date</option>;
+    }
     return (
       <select ref="selection" type="number" value={this.state.fieldVal} onChange={this.update} >{options}</select>
     )

@@ -16,6 +16,18 @@ svg {
 </style>
 <body>
 <script src="//d3js.org/d3.v3.min.js"></script>
+<script src="https://unpkg.com/react/umd/react.development.js" type="text/javascript"></script>
+<script src="https://unpkg.com/@lourd/react-google-sheet/dist/index.umd.js" type="text/javascript"></script>
+<script src = "https://plus.google.com/js/client:platform.js" async defer></script>
+<script src="https://apis.google.com/js/platform.js?onload=triggerGoogleLoaded" async defer></script>
+<script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+<script src="https://developers.google.com/api-client-library/javascript/reference/referencedocs#client-setup" type"text/javascript"></script>
+    <script type="text/javascript">
+        function triggerGoogleLoaded() {
+            console.log("google event loaded");
+            window.dispatchEvent(new Event('google-loaded'));
+        }
+    </script>
 <script>
 
 var m = [20, 20, 30, 20],

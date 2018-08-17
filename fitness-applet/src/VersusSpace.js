@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { RadioGroup, RadioButton } from 'react-radio-buttons';
 import { data } from './Data';
 import { ChartComponent } from './Graphs';
+import { UserRadio } from './UserRadio';
 
 const ColoredLine = ({ color }) => (
     <hr
@@ -16,56 +16,46 @@ const ColoredLine = ({ color }) => (
 export class VersusTab extends Component {
     state = {
         username: "default",
-        versusData: data[this.username]
+        versusname: "none",
+        versusData: data.Daniel,
     }
     componentDidMount() {
         this.setState({
             username: this.props.username,
-            versusData: data[this.props.username]
+            versusname: this.props.username,
+            versusworkout: this.props.workoutNames[0],
         })
     }
-    onChange() {
-
+    handleNameChoice(e){
+        this.setState({
+            versusname: e
+        });
+    }
+    handleWorkoutChoice(e){
+        this.setState({
+            versusworkout: e
+        });
     }
     render() {
+        const FilterData=()=>{
+            let thisData= this.state.versusData.filter(row=>{
+              if(Object.keys(row).length >1){
+                return row;
+              }return null;
+            }).map(row=>row);
+            return thisData;
+          }
         return (
             <div>
                 <div>
-                    <UserRadio />
+                    <UserRadio choiceEvent={(e)=>{this.handleNameChoice(e)}} options={this.props.userNames} />
                 </div>
-                <ColoredLine color="black" />
+                <ColoredLine color="Grey" />
                 <div>
-                    <WorkoutRadio />
+                    <UserRadio choiceEvent={(e)=>{this.handleWorkoutChoice(e)}} options={this.props.workoutNames} />
                 </div>
-                <ChartComponent data={this.state.versusData} />
+                <ChartComponent barGraph={true} data={FilterData()} />
             </div>
-        );
-    }
-}
-const sizeIcon = 4;
-const pad = 10;
-class UserRadio extends Component {
-    render() {
-        return (
-            <RadioGroup onChange={this.onChange} >
-                    <RadioButton iconSize={sizeIcon} iconInnerSize={sizeIcon} padding={pad} value="Daniel">Daniel</RadioButton>
-                    <RadioButton iconSize={sizeIcon} iconInnerSize={sizeIcon} padding={pad} value="Dennis">Dennis</RadioButton>
-                    <RadioButton iconSize={sizeIcon} iconInnerSize={sizeIcon} padding={pad} value="Moritz">Moritz</RadioButton>
-            </RadioGroup>
-        );
-    }
-}
-class WorkoutRadio extends Component {
-    render() {
-        return (
-            <RadioGroup onChange={this.onChange} horizontal>
-                    <RadioButton iconSize={sizeIcon} iconInnerSize={sizeIcon} padding={pad} value="Squat">Squat</RadioButton>
-                    <RadioButton iconSize={sizeIcon} iconInnerSize={sizeIcon} padding={pad} value="Press">Press</RadioButton>
-                    <RadioButton iconSize={sizeIcon} iconInnerSize={sizeIcon} padding={pad} value="Bench">Bench Press</RadioButton>
-                    <RadioButton iconSize={sizeIcon} iconInnerSize={sizeIcon} padding={pad} value="Deadlift">Deadlift</RadioButton>
-                    <RadioButton iconSize={sizeIcon} iconInnerSize={sizeIcon} padding={pad} value="Barbell-Row">Barbell-Row</RadioButton>
-                    <RadioButton iconSize={sizeIcon} iconInnerSize={sizeIcon} padding={pad} value="Chin-ups">Chin-ups</RadioButton>
-            </RadioGroup>
         );
     }
 }

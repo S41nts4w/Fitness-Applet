@@ -4,7 +4,7 @@ import { Button} from 'react-bootstrap';
 export class LoginTab extends Component {
     state = {
         user: {
-            credentials: "dennis.test@mesaic.co",
+            credentials: "Daniel",
             accepted: true
         }
     }

@@ -6,30 +6,25 @@ import { Route, Link } from 'react-router-dom';
 import { PersonalSpace } from './PersonalSpace';
 import { WorkoutTab } from './YourWorkout';
 import { VersusTab } from './VersusSpace';
-import { LoginTab } from './LoginTab';
-import { workoutData, userData } from './Data';
+import { getNames, workoutName } from './Data';
 import { LinkContainer } from 'react-router-bootstrap';
+import { SheetExtractor } from './TestSheetAccess';
 
 class App extends Component {
   state = {
-    credentials: "",
-    accepted: false
-  }
-
-  componentDidMount() {
-    userData.forEach(name => {
-      workoutData[name] = {};
-    });
+    credentials: "User",
+    accepted: false,
   }
 
   render() {
+    const Sheet = (props) => {
+      return <SheetExtractor loggedIn={props.loggedIn} signedin={(user) => { this.setState({ accepted: user, credentials: "Daniel" }); }} />
+    }
     if (this.state.accepted === false) {
       return (
         <div className="App">
           <HeaderComponent />
-          <p>{this.state.accepted}</p>
-          <p>{this.state.credentials}</p>
-          <LoginTab logIn={(user) => { this.setState({ accepted: user.accepted, credentials: user.credentials }); }} />
+          <Sheet loggedIn={false} />
         </div>
       );
     } else if (this.state.accepted === true) {
@@ -37,6 +32,7 @@ class App extends Component {
         <div className="App">
           <HeaderComponent />
           <Navigation credentials={this.state.credentials} logOut={(e) => { this.setState({ accepted: e }); }} />
+          <Sheet loggedIn={true} />
         </div>
       );
     }
@@ -49,7 +45,7 @@ class Routing extends Component {
       <div>
         <Route path="/PersonalSpace" render={(props) => <PersonalSpace {...props} username={this.props.creds} />} />
         <Route path="/YourWorkout" render={(props) => <WorkoutTab {...props} username={this.props.creds} />} />
-        <Route path="/VersusSpace" render={(props) => <VersusTab {...props} username={this.props.creds} />} />
+        <Route path="/VersusSpace" render={(props) => <VersusTab {...props} username={this.props.creds} userNames={getNames()} workoutNames={workoutName} />} />
       </div>
     );
   }
@@ -89,11 +85,11 @@ class Navigation extends Component {
                 <NavItem>Versus-Space</NavItem>
               </LinkContainer>
             </Nav>
-            <Nav pullRight>
-              <LinkContainer onClick={() => { this.props.logOut(false) }} to="/">
-                <NavItem>Logout</NavItem>
-              </LinkContainer>
-            </Nav>
+            <Navbar.Collapse>
+              <Navbar.Text pullRight>
+                Signed in as: <Navbar.Link href="#">{this.props.credentials}</Navbar.Link>
+              </Navbar.Text>
+            </Navbar.Collapse>
           </Navbar.Collapse>
         </Navbar>
         <Routing creds={this.props.credentials} />

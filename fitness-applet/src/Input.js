@@ -1,22 +1,42 @@
 import React, { Component } from 'react';
-import { workoutData } from './Data';
 import { Button } from 'react-bootstrap';
 
 export class InputComponent extends Component {
   state = {
-    name: "UserName",
+    name: this.props.selName,
     workout: "WorkoutName",
-    weight: 0
+    set: " ",
+    weight: 0,
+    date: this.props.selDate,
   }
   handleButton() {
     let { name, workout } = this.state;
-    this.setState({ weight: this.refs.weightPerformer.value });
-    workoutData[name][workout] = [this.refs.weightPerformer.value];
+    this.setState({ weight: this.refs.maxWeight.value });
+    this.props.submitted({
+      name: name,
+      workout: workout,
+      weight: this.state.weight,
+      set: this.state.set,
+      date: this.state.date
+    });
+  }
+  handleButtonAddSet() {
+    if (parseFloat(this.refs.maxWeight.value) !== this.state.weight) {
+      this.setState({
+        weight: parseFloat(this.refs.maxWeight.value),
+        set: `${this.refs.reps.value}`
+      })
+    }else {
+      this.setState({
+        set: `${this.state.set}-${this.refs.reps.value}`
+      })
+    }
   }
   componentDidMount() {
     this.setState({
       name: this.props.selName,
-      workout: this.props.selWorkout
+      workout: this.props.selWorkout,
+      date: this.props.selDate,
     });
   }
   componentDidUpdate(prevProps) {
@@ -34,7 +54,12 @@ export class InputComponent extends Component {
   render() {
     return (
       <div>
-        <input ref="weightPerformer" type="number" placeholder="Kg" />
+        <div>
+          <input ref="maxWeight" type="number" placeholder="Kg" />
+          <input ref="reps" type="number" placeholder="Amount" />
+          <Button onClick={(e) => { this.handleButtonAddSet(); }}>Add Set</Button>
+          <p>{`Your current Weight: ${this.state.weight} Set: ${this.state.set}`}</p>
+        </div>
         <Button onClick={(e) => { this.handleButton(); }}>Submit</Button>
       </div>
     )

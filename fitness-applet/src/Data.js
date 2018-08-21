@@ -196,13 +196,12 @@ export const fillVersusData = (props) => {
     sortable.sort(function (a, b) {
         let first = moment(a[1].time, 'DD.MM.YY');
         let second = moment(b[1].time, 'DD.MM.YY');
-        let test = moment.duration(first.diff(second));
-        let testDays = test.asDays();
-        return testDays;
+        let diff = moment.duration(first.diff(second));
+        return diff.asDays();
     });
     versusData = [];
     sortable.map((entry, i) => { return entry.slice(1).map(cell => versusData[i] = Object.assign(cell, versusData[i])) });
-    return null;
+    return versusData;
 }
 
 

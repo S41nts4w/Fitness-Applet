@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { versusData, fillData, fillVersusData, workoutName } from './Data';
+import { versusData, fillVersusData, workoutName } from './Data';
 import { ChartComponent } from './Graphs';
 import { UserRadio } from './UserRadio';
 
@@ -30,7 +30,7 @@ export class VersusTab extends Component {
                 versusname: "Moritz",
                 versusworkout: ["Squat", "Press"],
             },
-            versusData: versusData,
+            versusData: fillVersusData(this.state.props),
         });
     }
     handleNameChoice(e) {
@@ -39,19 +39,25 @@ export class VersusTab extends Component {
                 ...this.state.props,
                 versusname: e,
             },
+            versusData: fillVersusData(this.state.props),
         });
     }
     handleWorkoutChoice(e) {
         this.setState({
             props: {
-                ... this.state.props,
+                ...this.state.props,
                 versusworkout: [e],
             },
+            versusData: fillVersusData(this.state.props),
         });
     }
 
-    componentDidUpdate() {
-        fillVersusData(this.state.props);
+    componentDidUpdate(prevProps, prevState) {
+        if(this.state.props !== prevState.props){
+            this.setState({
+                versusData: fillVersusData(this.state.props),
+            });
+        }
     }
     render() {
         const FilterData = () => {
@@ -59,16 +65,20 @@ export class VersusTab extends Component {
                 if (Object.keys(row).length > 1) {
                     return row;
                 } return null;
-            }).map(row => row);
+            }).map(row => {
+                return row;
+            });
         }
-        const GetOptionNames = () =>{
-            let returnVal;
-            returnVal = workoutName.filter(name => {
+        const GetOptionNames = () => {
+            let returnVal = [];
+            workoutName.filter(name => {
                 if ((this.state.props.versusworkout).includes(name)) {
-                    let yourW = `Your ${name}`;
-                    let versW = `${this.state.props.versusname}'s ${name}`;
-                    return (yourW, versW);
-                }
+                    return true;
+                }return false;
+            }).map(option => {
+                returnVal.push(`Your ${option}`);
+                returnVal.push(`${this.state.props.versusname}'s ${option}`);
+                return null;
             });
             return returnVal;
         }

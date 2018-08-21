@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const userData = {
     2: {
         name: "Dennis",
@@ -27,80 +29,185 @@ export let getCell = (user) => {
     return scope;
 }
 export let workoutName = ["Squat", "Deadlift", "Press", "BenchPress", "ChinUp", "Bent-Over Barbell Row"];
-export let dateTable = [];
-export let dataSheet = [];
+let dateTable = { "Squat": [], "Deadlift": [], "Press": [], "BenchPress": [], "ChinUp": [], "Bent-Over Barbell Row": [] };
+let dataSheets = {}
 
 
-export const getDateTable = (name) => {
-    if (name !== "none" && name !== "") {
-        dateTable = data[name].map((key, i) => {
-            return key.time;
-        });
-        return dateTable;
-    } return ["none"];
+export const getDateTable = (workoutName) => {
+    return dateTable[workoutName];
 }
-export const getCellIndex = (date)=>{
+export const getCellIndex = (workout, date) => {
     let index;
-    dateTable.filter((cell, i)=>{
-        if(cell===date){
-            index =  i+3;
-        }return null
+    // date = date.substr(0,date.indexOf(' ')); 
+    dateTable[workout].filter((cell, i) => {
+        if (cell === date) {
+            index = i + 3;
+        } return null
     });
     return index;
 }
-
 export const fillOfflineSheet = (dataSet, tableName) => {
     if (tableName !== "") {
+        let currentDate = "";
         dataSet.slice(2).map((row, i) => {
             row.map((cell, j) => {
-                switch (j) {
-                    case 0:
-                        addElementToPersonalData(i, "time", cell, "Dennis");
-                        addElementToPersonalData(i, "time", cell, "Daniel");
-                        addElementToPersonalData(i, "time", cell, "Moritz");
-                        break;
-                    case 2:
-                    case 6:
-                    case 10:
-                        if (!parseWorkoutData(i, tableName, cell, j)) {
-                            return null;
-                        }
-                        break;
-                    default:
-                        return null
+                if (cell !== "") {
+                    switch (j) {
+                        case 0:
+                            if (!Object.keys(dataSheets).includes(cell)) {
+                                let workoutObject = {};
+                                for (let i = 0; i < workoutName.length; i++) {
+                                    workoutObject = Object.assign({ [workoutName[i]]: {} }, workoutObject);
+                                }
+                                dataSheets[cell] = { ...workoutObject };
+                            }
+                            currentDate = cell;
+                            break;
+                        case 2:
+                        case 6:
+                        case 10:
+                            dataSheets[currentDate][tableName] = Object.assign({ [userData[j].name]: { "weight": parseFloat(cell) } }, dataSheets[currentDate][tableName]);
+                            break;
+                        default:
+                            return null
+                    }
                 }
                 return null;
             }
             );
             return null;
         })
+        fillWorkoutDates(tableName);
     }
+    return null;
 }
 
-const parseWorkoutData = (i, tableName, cell, j) => {
-    let celldata = 0;
-    if (cell === "") {
-        return false;
+const fillWorkoutDates = (workoutName) => {
+    let today = moment();
+    dateTable[workoutName] = [];
+    Object.values(dataSheets).map((tupel, i) => {
+        if (Object.keys(tupel[workoutName]).length > 0) {
+            dateTable[workoutName].push(Object.keys(dataSheets)[i]);
+            return null;
+        }
+        return null;
+    })
+    dateTable[workoutName].sort(function (a, b) {
+        let first = moment(a, 'DD.MM.YY');
+        let second = moment(b, 'DD.MM.YY');
+        let diff = moment.duration(first.diff(second));
+        return diff.asDays();
+    });
+    let lastEntry = moment(dateTable[workoutName][dateTable[workoutName].length - 1], 'DD.MM.YY');
+    let differ = moment.duration(today.diff(lastEntry)).asDays();
+    if (differ >= 1) {  // >= 1 because hours are irrelevant 
+        dateTable[workoutName].push(`${today.format('DD.MM.YY')} (today)`);
     } else {
-        celldata = parseFloat(cell);
+        dateTable[workoutName].pop();
+        dateTable[workoutName].push(`${today.format('DD.MM.YY')} (today)`);
     }
-    addElementToPersonalData(i, tableName, celldata, userData[j].name);
-    return true;
+}
+
+export const fillData = (username) => {
+    data = [];
+    Object.keys(dataSheets).map(date => {
+        data.push({
+            "time": date,
+        });
+        return null;
+    });
+    Object.values(dataSheets).map((workout, i) => {
+        Object.keys(workout).map(entry => {
+            try {
+                Object.values(dataSheets[data[i].time][entry][username]).map(weight => {
+                    data[i] = Object.assign({ [entry]: weight }, data[i]);
+                    return null;
+                });
+            } catch (e) {
+            }
+            return null;
+        });
+        return null;
+    });
+
+    var sortable = [];
+    for (var date in data) {
+        sortable.push([date, data[date]]);
+    }
+
+    sortable.sort(function (a, b) {
+        let first = moment(a[1].time, 'DD.MM.YY');
+        let second = moment(b[1].time, 'DD.MM.YY');
+        let test = moment.duration(first.diff(second));
+        let testDays = test.asDays();
+        return testDays;
+    });
+    data = [];
+    sortable.map((entry, i) => { return entry.slice(1).map(cell => data[i] = Object.assign(cell, data[i])) });
+    return null;
+}
+
+export const fillVersusData = (props) => {
+    versusData = [];
+    Object.keys(dataSheets).map(date => {
+        versusData.push({
+            "time": date,
+        });
+        return null;
+    });
+    Object.values(dataSheets).map((workout, i) => {
+        Object.keys(workout).map(entry => {
+            try {
+                if (props.username !== props.versusname) {
+                    Object.values(dataSheets[versusData[i].time][entry][props.username]).map(weight => {
+                        if (props.versusworkout.includes(entry)) {
+                            let entryName = `Your ${entry}`;
+                            versusData[i] = Object.assign({ [entryName]: weight }, versusData[i]);
+                            return null;
+                        }
+                        return null;
+                    });
+                    Object.values(dataSheets[versusData[i].time][entry][props.versusname]).map(weight => {
+                        if (props.versusworkout.includes(entry)) {
+                            let entryName = `${props.versusname}'s ${entry}`;
+                            versusData[i] = Object.assign({ [entryName]: weight }, versusData[i]);
+                            return null;
+                        }
+                        return null;
+                    });
+                } else {
+                    Object.values(dataSheets[versusData[i].time][entry][props.username]).map(weight => {
+                        versusData[i] = Object.assign({ [entry]: weight }, versusData[i]);
+                        return null;
+                    });
+                }
+            } catch (e) {
+            }
+            return null;
+        });
+        return null;
+    });
+
+    var sortable = [];
+    for (var date in versusData) {
+        sortable.push([date, versusData[date]]);
+    }
+
+    sortable.sort(function (a, b) {
+        let first = moment(a[1].time, 'DD.MM.YY');
+        let second = moment(b[1].time, 'DD.MM.YY');
+        let test = moment.duration(first.diff(second));
+        let testDays = test.asDays();
+        return testDays;
+    });
+    versusData = [];
+    sortable.map((entry, i) => { return entry.slice(1).map(cell => versusData[i] = Object.assign(cell, versusData[i])) });
+    return null;
 }
 
 
-function addElementToPersonalData(index, newKey, cell, userName) {
-    var personalData = Object.assign({}, data[userName][index]);
-    var newInput = newKey;
-    personalData[newInput] = cell;
-    data[userName][index] = personalData;
-}
-
-export const data = {
-    Dennis: [],
-    Daniel: [],
-    Moritz: []
-}
+export let versusData = [];
+export let data = [];
 
 export let workoutData = {
 }

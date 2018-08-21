@@ -8,7 +8,7 @@ export class WorkoutTab extends Component {
     state = {
         username: "none",
         workout: "none",
-        date: "none"
+        date: ''
     }
     componentDidMount() {
         this.setState({
@@ -29,7 +29,7 @@ export class WorkoutTab extends Component {
         return (
             <div>
                 <DropDown options={workoutName} onUpdate={(e) => { this.setState({ workout: e }); }} />
-                <DropDown options={getDateTable(this.state.username)} onUpdate={(e) => { this.setState({ date: e }); }} />
+                <DropDown options={getDateTable(this.state.workout)} onUpdate={(e) => { this.setState({ date: e }); }} />
                 <InputComponent selName={this.state.username} selDate={this.state.date} selWorkout={this.state.workout} submitted={(props) => {props.date = this.state.date; bundleWriter(props) }} />
             </div>
         );
@@ -37,14 +37,21 @@ export class WorkoutTab extends Component {
 }
 
 const bundleWriter = (props)=>{
+    let date = props.date;
+    date = date.substr(0, (date +  " ").indexOf(" "));
+    let writeDate = {
+        value: date,
+        range: `${props.workout}!A${getCellIndex(props.workout, props.date)}`,
+    }
     let writeWeight = {
         value: props.weight,
-        range: `${props.workout}!${getCell(props.name)}${getCellIndex(props.date)}`,
+        range: `${props.workout}!${getCell(props.name)}${getCellIndex(props.workout, props.date)}`,
     }
     let writeSet = {
         value: props.set,
-        range: `${props.workout}!${String.fromCharCode(getCell(props.name).charCodeAt(0)+3)}${getCellIndex(props.date)}`,
+        range: `${props.workout}!${String.fromCharCode(getCell(props.name).charCodeAt(0)+3)}${getCellIndex(props.workout, props.date)}`,
     }
+    WriteSingleCell(writeDate);
     WriteSingleCell(writeWeight);
     WriteSingleCell(writeSet);
 }

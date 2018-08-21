@@ -1,26 +1,30 @@
 import React, { Component } from 'react';
-import { data } from './Data';
+import { data, fillData, workoutName } from './Data';
 import { ChartComponent } from './Graphs';
 
 export class PersonalSpace extends Component {
   state = {
-    dataSet: data[this.props.username],
-    
+    dataSet: data
+  }
+  componentDidMount(){
+    fillData(this.props.username);
+    this.setState({
+      dataSet: data
+    })
   }
   
   render() {
     const { dataSet} = this.state;
     const FilterData=()=>{
-      let thisData= dataSet.filter(row=>{
+      return dataSet.filter(row=>{
         if(Object.keys(row).length >1){
           return row;
         }return null;
       }).map(row=>row);
-      return thisData;
     }
     return (
       <div>
-        <ChartComponent otherGraph={true} data={FilterData()} />
+        <ChartComponent workoutNames={workoutName} otherGraph={true} data={FilterData()} />
       </div>
     );
   }

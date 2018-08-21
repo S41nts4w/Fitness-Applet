@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { data } from './Data';
+import { versusData, fillData, fillVersusData, workoutName } from './Data';
 import { ChartComponent } from './Graphs';
 import { UserRadio } from './UserRadio';
 
@@ -15,46 +15,73 @@ const ColoredLine = ({ color }) => (
 
 export class VersusTab extends Component {
     state = {
-        username: "default",
-        versusname: "none",
-        versusData: data.Daniel,
+        props: {
+            username: this.props.username,
+            versusname: "Moritz",
+            versusworkout: ["Squat", "Press"],
+        },
+        versusData: versusData,
     }
     componentDidMount() {
+
         this.setState({
-            username: this.props.username,
-            versusname: this.props.username,
-            versusworkout: this.props.workoutNames[0],
-        })
-    }
-    handleNameChoice(e){
-        this.setState({
-            versusname: e
+            props: {
+                username: this.props.username,
+                versusname: "Moritz",
+                versusworkout: ["Squat", "Press"],
+            },
+            versusData: versusData,
         });
     }
-    handleWorkoutChoice(e){
+    handleNameChoice(e) {
         this.setState({
-            versusworkout: e
+            props: {
+                ...this.state.props,
+                versusname: e,
+            },
         });
+    }
+    handleWorkoutChoice(e) {
+        this.setState({
+            props: {
+                ... this.state.props,
+                versusworkout: [e],
+            },
+        });
+    }
+
+    componentDidUpdate() {
+        fillVersusData(this.state.props);
     }
     render() {
-        const FilterData=()=>{
-            let thisData= this.state.versusData.filter(row=>{
-              if(Object.keys(row).length >1){
-                return row;
-              }return null;
-            }).map(row=>row);
-            return thisData;
-          }
+        const FilterData = () => {
+            return this.state.versusData.filter(row => {
+                if (Object.keys(row).length > 1) {
+                    return row;
+                } return null;
+            }).map(row => row);
+        }
+        const GetOptionNames = () =>{
+            let returnVal;
+            returnVal = workoutName.filter(name => {
+                if ((this.state.props.versusworkout).includes(name)) {
+                    let yourW = `Your ${name}`;
+                    let versW = `${this.state.props.versusname}'s ${name}`;
+                    return (yourW, versW);
+                }
+            });
+            return returnVal;
+        }
         return (
             <div>
                 <div>
-                    <UserRadio choiceEvent={(e)=>{this.handleNameChoice(e)}} options={this.props.userNames} />
+                    <UserRadio choiceEvent={(e) => { this.handleNameChoice(e) }} options={this.props.userNames} />
                 </div>
                 <ColoredLine color="Grey" />
                 <div>
-                    <UserRadio choiceEvent={(e)=>{this.handleWorkoutChoice(e)}} options={this.props.workoutNames} />
+                    <UserRadio choiceEvent={(e) => { this.handleWorkoutChoice(e) }} options={this.props.workoutNames} />
                 </div>
-                <ChartComponent barGraph={true} data={FilterData()} />
+                <ChartComponent workoutNames={GetOptionNames()} barGraph={true} data={FilterData()} />
             </div>
         );
     }

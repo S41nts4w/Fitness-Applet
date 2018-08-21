@@ -18,7 +18,7 @@ class App extends Component {
 
   render() {
     const Sheet = (props) => {
-      return <SheetExtractor loggedIn={props.loggedIn} signedin={(user) => { this.setState({ accepted: user, credentials: "Daniel" }); }} />
+      return <SheetExtractor loggedIn={props.loggedIn} signedin={(user) => { this.setState({ accepted: user, credentials: "Dennis" }); }} />
     }
     if (this.state.accepted === false) {
       return (

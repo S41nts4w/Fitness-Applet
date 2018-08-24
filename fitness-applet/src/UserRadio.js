@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { RadioGroup, RadioButton } from 'react-radio-buttons';
 const sizeIcon = 4;
 const pad = 10;
 
 export class UserRadio extends Component {
-    onChange = (e) =>{
+    onChange = (e) => {
         this.props.choiceEvent(e);
     }
     render() {

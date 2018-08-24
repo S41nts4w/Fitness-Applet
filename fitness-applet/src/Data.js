@@ -28,8 +28,8 @@ export let getCell = (user) => {
     })
     return scope;
 }
-export let workoutName = ["Squat", "Deadlift", "Press", "BenchPress", "ChinUp", "Bent-Over Barbell Row"];
-let dateTable = { "Squat": [], "Deadlift": [], "Press": [], "BenchPress": [], "ChinUp": [], "Bent-Over Barbell Row": [] };
+export let workoutName = ["Squat", "Deadlift", "Press", "BenchPress", "Bent-Over Barbell Row"];
+let dateTable = { "Squat": [], "Deadlift": [], "Press": [], "BenchPress": [], "Bent-Over Barbell Row": [] };
 let dataSheets = {}
 
 

@@ -24,7 +24,6 @@ const SheetsDemo = props => (
         {signedIn && <DataFetcher sheetRange={`Press${range}`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="Press" />}
         {signedIn && <DataFetcher sheetRange={`BenchPress${range}`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="BenchPress" />}
         {signedIn && <DataFetcher sheetRange={`Deadlift${range}`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="Deadlift" />}
-        {signedIn && <DataFetcher sheetRange={`ChinUp${range}`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="ChinUp" />}
         {signedIn && <DataFetcher sheetRange={`Bent-Over Barbell Row${range}`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="Bent-Over Barbell Row" />}
             </div>
 )}

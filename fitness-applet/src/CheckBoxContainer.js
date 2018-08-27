@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import {Checkbox} from './Checkbox';
+import { Checkbox } from './Checkbox';
 import { relativeTimeRounding } from '../node_modules/moment';
 
 export class CheckBoxContainer extends Component {
     constructor(props) {
         super(props);
-    
+
         this.state = {
-          checkedItems: new Map(),
+            checkedItems: new Map(),
         }
-    
+
         this.handleChange = this.handleChange.bind(this);
     }
 
@@ -18,15 +18,21 @@ export class CheckBoxContainer extends Component {
         const isChecked = e.target.checked;
         this.setState(prevState => ({ checkedItems: prevState.checkedItems.set(item, isChecked) }));
     }
-    componentDidUpdate(prevProps, prevState){
-        let returnArray = [];
-        this.state.checkedItems.forEach((entry, i)=>{
-            if(entry){
-                let key = this.state.checkedItems.keys().Entries;
-                returnArray.push(key[i]);
-            }
-        })
-        return returnArray;
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state !== prevState) {
+            let returnArray = [];
+            this.state.checkedItems.forEach((value, key) => {
+                if (value === true) {
+                    if (returnArray.length === 0) {
+                        returnArray[0] = key;
+                    } else {
+                        returnArray.push(key);
+                    }
+
+                }
+            })
+            this.props.choiceEvent(returnArray);
+        }
     }
 
     render() {
@@ -38,8 +44,8 @@ export class CheckBoxContainer extends Component {
         })
         return (
             <React.Fragment>
-                {CheckBoxOptions.map(option=>option)}
+                {CheckBoxOptions.map(option => option)}
             </React.Fragment>
-                );
-            }
+        );
+    }
 }

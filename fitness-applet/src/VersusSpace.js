@@ -93,7 +93,7 @@ export class VersusTab extends Component {
                 </div>
                 <ColoredLine color="Grey" />
                 <div>
-                    <UserRadio choiceEvent={(e) => { this.handleWorkoutChoice(e) }} options={this.props.workoutNames} />
+                    {/* <UserRadio choiceEvent={(e) => { this.handleWorkoutChoice(e) }} options={this.props.workoutNames} /> */}
                     <CheckBoxContainer choiceEvent={(e) => { this.handleWorkoutChoice(e) }} options={this.props.workoutNames} />
                 </div>
                 <ChartComponent workoutNames={GetOptionNames()} barGraph={true} data={FilterData()} />

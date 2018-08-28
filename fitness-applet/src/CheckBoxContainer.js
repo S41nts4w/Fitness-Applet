@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Checkbox } from './Checkbox';
-import { relativeTimeRounding } from '../node_modules/moment';
+import { relativeTimeRounding } from 'moment';
 
 export class CheckBoxContainer extends Component {
     constructor(props) {

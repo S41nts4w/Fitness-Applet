@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { versusData, fillVersusData, workoutName } from './Data';
+import { versusData, fillVersusData, workoutName } from './Store';
 import { ChartComponent } from './Graphs';
 import { UserRadio } from './UserRadio';
 import { CheckBoxContainer } from './CheckBoxContainer';
@@ -22,6 +22,8 @@ export class VersusTab extends Component {
             versusworkout: [],
         },
         versusData: versusData,
+        otherGraph: false,
+        barGraph: true,
     }
     componentDidMount() {
 
@@ -50,6 +52,28 @@ export class VersusTab extends Component {
                 versusworkout: e,
             },
             versusData: fillVersusData(this.state.props),
+        });
+    }
+    handleGraphChoice(e) {
+        switch (e) {
+            case 'Bar Graph':
+            this.setState({
+                barGraph: true,
+                otherGraph: false,
+            });
+                break;
+            case 'Other Graph':
+            this.setState({
+                barGraph: false,
+                otherGraph: true,
+            });
+                break;
+        
+            default:
+                break;
+        }
+        this.setState({
+            graphStyle: e
         });
     }
 
@@ -93,10 +117,10 @@ export class VersusTab extends Component {
                 </div>
                 <ColoredLine color="Grey" />
                 <div>
-                    {/* <UserRadio choiceEvent={(e) => { this.handleWorkoutChoice(e) }} options={this.props.workoutNames} /> */}
                     <CheckBoxContainer choiceEvent={(e) => { this.handleWorkoutChoice(e) }} options={this.props.workoutNames} />
                 </div>
-                <ChartComponent workoutNames={GetOptionNames()} barGraph={true} data={FilterData()} />
+                <ChartComponent workoutNames={GetOptionNames()} otherGraph={this.state.otherGraph} barGraph={this.state.barGraph} data={FilterData()} />
+                <UserRadio choiceEvent={(e) => { this.handleGraphChoice(e) }} options={['Bar Graph', 'Other Graph']} />
             </div>
         );
     }

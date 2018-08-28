@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { data, fillData, workoutName } from './Data';
+import { data, fillData, workoutName } from './Store';
 import { ChartComponent } from './Graphs';
 
 export class PersonalSpace extends Component {

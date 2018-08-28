@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { DropDown } from './Selector';
-import { workoutName, getCell, getDateTable, getCellIndex } from './Data';
+import { workoutName, getCell, getDateTable, getCellIndex, userData, getWeightsFor } from './Store';
 import { InputComponent } from './Input';
 import { WriteSingleCell } from './SheetWriter'
 
@@ -22,23 +22,27 @@ export class WorkoutTab extends Component {
             })
         }
     }
-
-    
-
     render() {
         return (
             <div>
-                <DropDown options={workoutName} onUpdate={(e) => { this.setState({ workout: e }); }} />
-                <DropDown options={getDateTable(this.state.workout)} onUpdate={(e) => { this.setState({ date: e }); }} />
-                <InputComponent selName={this.state.username} selDate={this.state.date} selWorkout={this.state.workout} submitted={(props) => {props.date = this.state.date; bundleWriter(props) }} />
+                <div>
+                    <DropDown options={workoutName} onUpdate={(e) => { this.setState({ workout: e }); }} />
+                    <DropDown options={getDateTable(this.state.workout)} onUpdate={(e) => { this.setState({ date: e }); }} />
+                </div>
+                <div>
+                    <h4>Last completed weights: </h4>
+                    {getWeightsFor(this.state.workout, this.state.username)}
+                </div>
+                <h4>Enter your workout</h4>
+                <InputComponent selName={this.state.username} selDate={this.state.date} selWorkout={this.state.workout} submitted={(props) => { props.date = this.state.date; bundleWriter(props) }} />
             </div>
         );
     }
 }
 
-const bundleWriter = (props)=>{
+const bundleWriter = (props) => {
     let date = props.date;
-    date = date.substr(0, (date +  " ").indexOf(" "));
+    date = date.substr(0, (date + " ").indexOf(" "));
     let writeDate = {
         value: date,
         range: `${props.workout}!A${getCellIndex(props.workout, props.date)}`,
@@ -49,7 +53,7 @@ const bundleWriter = (props)=>{
     }
     let writeSet = {
         value: props.set,
-        range: `${props.workout}!${String.fromCharCode(getCell(props.name).charCodeAt(0)+3)}${getCellIndex(props.workout, props.date)}`,
+        range: `${props.workout}!${String.fromCharCode(getCell(props.name).charCodeAt(0) + 3)}${getCellIndex(props.workout, props.date)}`,
     }
     WriteSingleCell(writeDate);
     WriteSingleCell(writeWeight);

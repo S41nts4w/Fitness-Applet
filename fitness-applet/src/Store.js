@@ -1,18 +1,12 @@
 import moment from 'moment';
+import { WriteSingleCell } from './SheetWriter';
+import _ from 'lodash';
+
+const sheetUserJump = 4;
+
+export let userDataReceived = false;
 
 export const userData = {
-    2: {
-        name: "Dennis",
-        sheetScope: "C"
-    },
-    6: {
-        name: "Daniel",
-        sheetScope: "G"
-    },
-    10: {
-        name: "Moritz",
-        sheetScope: "K"
-    },
 };
 
 export let getNames = () => {
@@ -38,7 +32,6 @@ export const getDateTable = (workoutName) => {
 }
 export const getCellIndex = (workout, date) => {
     let index;
-    // date = date.substr(0,date.indexOf(' ')); 
     dateTable[workout].filter((cell, i) => {
         if (cell === date) {
             index = i + 3;
@@ -47,29 +40,33 @@ export const getCellIndex = (workout, date) => {
     return index;
 }
 export const fillOfflineSheet = (dataSet, tableName) => {
-    if (tableName !== "") {
+    if (tableName !== "UserRegister") {
         let currentDate = "";
         dataSet.slice(2).map((row, i) => {
             row.map((cell, j) => {
                 if (cell !== "") {
-                    switch (j) {
-                        case 0:
-                            if (!Object.keys(dataSheets).includes(cell)) {
-                                let workoutObject = {};
-                                for (let i = 0; i < workoutName.length; i++) {
-                                    workoutObject = Object.assign({ [workoutName[i]]: {} }, workoutObject);
-                                }
-                                dataSheets[cell] = { ...workoutObject };
+                    if (j === 0) {
+                        if (!Object.keys(dataSheets).includes(cell)) {
+                            let workoutObject = {};
+                            for (let i = 0; i < workoutName.length; i++) {
+                                workoutObject = Object.assign({ [workoutName[i]]: {} }, workoutObject);
                             }
-                            currentDate = cell;
-                            break;
-                        case 2:
-                        case 6:
-                        case 10:
-                            dataSheets[currentDate][tableName] = Object.assign({ [userData[j].name]: { "weight": parseFloat(cell) } }, dataSheets[currentDate][tableName]);
-                            break;
-                        default:
-                            return null
+                            dataSheets[cell] = { ...workoutObject };
+                        }
+                        currentDate = cell;
+                    } else if ((j - 2) % 4 === 0) {
+                        if (userData.hasOwnProperty(j)) {
+                            const weight = parseFloat(cell.replace(/[^\d,\.]/g, "").replace(/,/g, "."));
+                            dataSheets[currentDate][tableName] = Object.assign({ [userData[j].name]: { weight } }, dataSheets[currentDate][tableName]);
+                        }
+                    }
+                    if (j > 4 && ((j - 1) % 4 === 0)) {
+                        if (userData.hasOwnProperty(j - 3)) {
+                            dataSheets[currentDate][tableName][userData[j-3].name] = { 
+                                ...dataSheets[currentDate][tableName][userData[j-3].name], 
+                                "set": cell,
+                            };
+                        }
                     }
                 }
                 return null;
@@ -78,6 +75,59 @@ export const fillOfflineSheet = (dataSet, tableName) => {
             return null;
         })
         fillWorkoutDates(tableName);
+    } else if (tableName === 'UserRegister') {
+        dataSet.slice(1).map((row, i) => {
+            row.map((cell, j) => {
+                switch (j) {
+                    case 0:
+                        userData[(sheetUserJump * i) + 2] = {
+                            ...userData[(sheetUserJump * i) + 2],
+                            "id": cell,
+                        };
+                        break;
+                    case 1:
+                        userData[(sheetUserJump * i) + 2] = {
+                            ...userData[(sheetUserJump * i) + 2],
+                            "name": cell,
+                        };
+                        break;
+                    case 2:
+                        userData[(sheetUserJump * i) + 2] = {
+                            ...userData[(sheetUserJump * i) + 2],
+                            "sheetScope": cell,
+                        };
+                        break;
+
+                    default:
+                        break;
+                }
+            })
+        })
+        userDataReceived = true;
+    }
+    return null;
+}
+
+export function getWeightsFor(workout, username) {
+    if (workout !== "none" && username !== "none") {
+        var sortable = [];
+        _.forEach(dataSheets, (value, key) => {
+            sortable.push([key, dataSheets[key]]);
+        })
+        sortable.sort(function (a, b) {
+            let first = moment(a[0], 'DD.MM.YY');
+            let second = moment(b[0], 'DD.MM.YY');
+            let diff = moment.duration(first.diff(second));
+            return diff.asDays();
+        });
+        let lastElem = sortable.pop();
+        while (!lastElem[1][workout].hasOwnProperty(username) && sortable.length !== 0) {
+            lastElem = sortable.pop();
+        }
+        if (lastElem[1][workout].hasOwnProperty(username)) {
+            let test = `Weight: ${lastElem[1][workout][username].weight}, Set: ${lastElem[1][workout][username].set}`;
+            return test;
+        }
     }
     return null;
 }
@@ -202,6 +252,38 @@ export const fillVersusData = (props) => {
     versusData = [];
     sortable.map((entry, i) => { return entry.slice(1).map(cell => versusData[i] = Object.assign(cell, versusData[i])) });
     return versusData;
+}
+export const profileChecker = (profile) => {
+    let newUser = true;
+    Object.values(userData).reduce((prevVal, curVal, i) => {
+        let id = profile.getId();
+        if (curVal.id === id) {
+            newUser = false;
+        }
+    })
+    if (newUser) {
+        let newUserNumber = (sheetUserJump * Object.keys(userData).length) + 2;
+        userData[newUserNumber] = {
+            "id": profile.getId(),
+            "name": profile.getName(),
+            "sheetScope": String.fromCharCode(("A").charCodeAt(0) + newUserNumber),
+        };
+        let writeID = {
+            value: userData[newUserNumber]["id"],
+            range: `UserRegister!A${Object.keys(userData).length + 1}`,
+        }
+        let writeName = {
+            value: userData[newUserNumber]["name"],
+            range: `UserRegister!B${Object.keys(userData).length + 1}`,
+        }
+        let writeScope = {
+            value: userData[newUserNumber]["sheetScope"],
+            range: `UserRegister!C${Object.keys(userData).length + 1}`,
+        }
+        WriteSingleCell(writeID);
+        WriteSingleCell(writeName);
+        WriteSingleCell(writeScope);
+    }
 }
 
 

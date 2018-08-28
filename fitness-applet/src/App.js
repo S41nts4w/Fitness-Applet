@@ -6,7 +6,7 @@ import { Route, Link } from 'react-router-dom';
 import { PersonalSpace } from './PersonalSpace';
 import { WorkoutTab } from './YourWorkout';
 import { VersusTab } from './VersusSpace';
-import { getNames, workoutName } from './Data';
+import { getNames, workoutName } from './Store';
 import { LinkContainer } from 'react-router-bootstrap';
 import { SheetExtractor } from './TestSheetAccess';
 
@@ -18,7 +18,7 @@ class App extends Component {
 
   render() {
     const Sheet = (props) => {
-      return <SheetExtractor loggedIn={props.loggedIn} signedin={(user) => { this.setState({ accepted: user, credentials: "Dennis" }); }} />
+      return <SheetExtractor loggedIn={props.loggedIn} signedin={(accepted, user) => { this.setState({ accepted: accepted, credentials: user.getName() }); }} />
     }
     if (this.state.accepted === false) {
       return (

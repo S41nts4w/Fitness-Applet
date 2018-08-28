@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Brush, BarChart, Bar, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, LineChart } from 'recharts/lib';
-import { workoutName } from './Data';
+import { workoutName } from './Store';
 
 const styles = {
   outer: {
+    paddingTop: '10%',
     paddingBottom: '40%',
     position: 'relative',
     height: 150
@@ -22,35 +23,17 @@ const colorChanger = (i) => {
 }
 
 
-export class ChartComponent extends Component {
-  state = {
-    data: []
-  }
-  componentDidMount() {
-    this.setState({
-      data: this.props.data
-    })
-  }
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.data !== prevState.data) {
-      this.setState({
-        data: this.props.data
-      });
-    }
-  }
-
-  render() {
-    let data = this.props.data;
+export const ChartComponent = (props) => {
+    let data = props.data;
     return (
       <div style={styles.outer} >
         <div style={styles.inner}>
           <ResponsiveContainer>
-            {this.props.barGraph ? <BarGraph workoutNames={this.props.workoutNames} data={data} /> : this.props.otherGraph ? <LineGraph workoutNames={this.props.workoutNames} data={data} /> : <p>Please define a graph type</p>}
+            {props.barGraph ? <BarGraph workoutNames={props.workoutNames} data={data} /> : props.otherGraph ? <LineGraph workoutNames={props.workoutNames} data={data} /> : <p>Please define a graph type</p>}
           </ResponsiveContainer>
         </div>
       </div>
     )
-  }
 }
 
 class BarGraph extends Component {
@@ -77,7 +60,7 @@ class BarGraph extends Component {
 
 class LineGraph extends Component {
   render() {
-    let graphOption = workoutName.map((option, i) => {
+    let graphOption = this.props.workoutNames.map((option, i) => {
       return <Line key={`Option_${option}`} connectNulls={true} label={{ position: 'top', fontSize: 11 }} type="monotone" dataKey={option} stroke={colorChanger(i)} />
     });
     return (

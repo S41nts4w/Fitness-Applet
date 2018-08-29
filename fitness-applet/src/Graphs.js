@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Brush, BarChart, Bar, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, LineChart } from 'recharts/lib';
+import { LabelList, Brush, BarChart, Bar, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, LineChart } from 'recharts/lib';
 import { workoutName } from './Store';
+import _ from 'lodash';
 
 const styles = {
   outer: {
@@ -24,16 +25,16 @@ const colorChanger = (i) => {
 
 
 export const ChartComponent = (props) => {
-    let data = props.data;
-    return (
-      <div style={styles.outer} >
-        <div style={styles.inner}>
-          <ResponsiveContainer>
-            {props.barGraph ? <BarGraph workoutNames={props.workoutNames} data={data} /> : props.otherGraph ? <LineGraph workoutNames={props.workoutNames} data={data} /> : <p>Please define a graph type</p>}
-          </ResponsiveContainer>
-        </div>
+  let data = props.data;
+  return (
+    <div style={styles.outer} >
+      <div style={styles.inner}>
+        <ResponsiveContainer>
+          {props.barGraph ? <BarGraph workoutNames={props.workoutNames} data={data} /> : props.otherGraph ? <LineGraph workoutNames={props.workoutNames} data={data} /> : <p>Please define a graph type</p>}
+        </ResponsiveContainer>
       </div>
-    )
+    </div>
+  )
 }
 
 class BarGraph extends Component {

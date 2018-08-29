@@ -3,9 +3,6 @@ import { WriteSingleCell } from './SheetWriter';
 import _ from 'lodash';
 
 const sheetUserJump = 4;
-
-export let userDataReceived = false;
-
 export const userData = {
 };
 
@@ -62,8 +59,8 @@ export const fillOfflineSheet = (dataSet, tableName) => {
                     }
                     if (j > 4 && ((j - 1) % 4 === 0)) {
                         if (userData.hasOwnProperty(j - 3)) {
-                            dataSheets[currentDate][tableName][userData[j-3].name] = { 
-                                ...dataSheets[currentDate][tableName][userData[j-3].name], 
+                            dataSheets[currentDate][tableName][userData[j - 3].name] = {
+                                ...dataSheets[currentDate][tableName][userData[j - 3].name],
                                 "set": cell,
                             };
                         }
@@ -103,7 +100,6 @@ export const fillOfflineSheet = (dataSet, tableName) => {
                 }
             })
         })
-        userDataReceived = true;
     }
     return null;
 }
@@ -156,6 +152,40 @@ const fillWorkoutDates = (workoutName) => {
         dateTable[workoutName].pop();
         dateTable[workoutName].push(`${today.format('DD.MM.YY')} (today)`);
     }
+}
+
+export const getStatistics = (username) => {
+    let statistic;
+    _.mapValues(dateTable, (value, name) => {
+        let count = 0;
+        statistic = {
+            ...statistic,
+            [name]: 0,
+        };
+        return _.forEach(value, (date) => {
+            date = date.replace(/[^\d.\.]/g, "");
+            if (dataSheets[date][name].hasOwnProperty(username)) {
+                let set = dataSheets[date][name][username].set;
+                if (typeof (set) != 'undefined') {
+                    let index = 0;
+                    let rep = [''];
+                    for (var v of set) {
+                        if (v === '-') {
+                            index++;
+                            rep[index] = '';
+                        } else {
+                            rep[index] = rep[index].concat(v);
+                        }
+                    }
+                    for (let j = 0; j < rep.length; j++) {
+                        statistic[name] += ((dataSheets[date][name][username].weight * 2) + 20) * rep[j];
+                    }
+                }
+            }
+        });
+        return value;
+    })
+    return statistic;
 }
 
 export const fillData = (username) => {
@@ -253,6 +283,8 @@ export const fillVersusData = (props) => {
     sortable.map((entry, i) => { return entry.slice(1).map(cell => versusData[i] = Object.assign(cell, versusData[i])) });
     return versusData;
 }
+
+
 export const profileChecker = (profile) => {
     let newUser = true;
     Object.values(userData).reduce((prevVal, curVal, i) => {

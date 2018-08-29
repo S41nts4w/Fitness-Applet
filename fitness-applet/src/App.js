@@ -6,6 +6,7 @@ import { Route, Link } from 'react-router-dom';
 import { PersonalSpace } from './PersonalSpace';
 import { WorkoutTab } from './YourWorkout';
 import { VersusTab } from './VersusSpace';
+import { StatisticPage } from './Statistics';
 import { getNames, workoutName } from './Store';
 import { LinkContainer } from 'react-router-bootstrap';
 import { SheetExtractor } from './TestSheetAccess';
@@ -43,6 +44,7 @@ class Routing extends Component {
   render() {
     return (
       <div>
+        <Route path="/Statistics" render={(props) => <StatisticPage {...props} username={this.props.creds} />} />
         <Route path="/PersonalSpace" render={(props) => <PersonalSpace {...props} username={this.props.creds} />} />
         <Route path="/YourWorkout" render={(props) => <WorkoutTab {...props} username={this.props.creds} />} />
         <Route path="/VersusSpace" render={(props) => <VersusTab {...props} username={this.props.creds} userNames={getNames()} workoutNames={workoutName} />} />
@@ -69,7 +71,9 @@ class Navigation extends Component {
         <Navbar fluid collapseOnSelect>
           <Navbar.Header>
             <Navbar.Brand>
-              <Link to="/">Fitness-Applet</Link>
+            <LinkContainer to="/Statistics">
+                <NavItem>Fitness-Applet</NavItem>
+              </LinkContainer>
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>

@@ -57,10 +57,10 @@ export class InputComponent extends Component {
         <div>
           <input ref="maxWeight" type="number" placeholder="Kg" />
           <input ref="reps" type="number" placeholder="Amount" />
-          <Button onClick={(e) => { this.handleButtonAddSet(); }}>Add Set</Button>
+          <Button bsStyle="primary" onClick={(e) => { this.handleButtonAddSet(); }}>Add Set</Button>
           <p>{`Your current Weight: ${this.state.weight} Set: ${this.state.set}`}</p>
         </div>
-        <Button onClick={(e) => { this.handleButton(); }}>Submit</Button>
+        <Button bsStyle="primary" onClick={(e) => { this.handleButton(); }}>Submit</Button>
       </div>
     )
   }

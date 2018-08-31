@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar, NavItem, Nav } from 'react-bootstrap';
+import { Navbar, NavItem, Nav, Grid, Col, Image, Row } from 'react-bootstrap';
 import logo from './logo.svg';
 import './App.css';
 import { Route, Link } from 'react-router-dom';
@@ -19,7 +19,7 @@ class App extends Component {
 
   render() {
     const Sheet = (props) => {
-      return <SheetExtractor loggedIn={props.loggedIn} signedin={(accepted, user) => { this.setState({ accepted: accepted, credentials: user.getName() }); }} />
+      return <SheetExtractor loggedIn={props.loggedIn} signedin={(accepted, user) => { this.setState({ accepted: accepted, credentials: user.getName(), image: user.getImageUrl() }); }} />
     }
     if (this.state.accepted === false) {
       return (
@@ -32,7 +32,7 @@ class App extends Component {
       return (
         <div className="App">
           <HeaderComponent />
-          <Navigation credentials={this.state.credentials} logOut={(e) => { this.setState({ accepted: e }); }} />
+          <Navigation image={this.state.image} credentials={this.state.credentials} logOut={(e) => { this.setState({ accepted: e }); }} />
           <Sheet loggedIn={true} />
         </div>
       );
@@ -53,54 +53,48 @@ class Routing extends Component {
   }
 }
 
-class HeaderComponent extends Component {
-  render() {
+const HeaderComponent = () => {
     return (
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <h1 className="App-title">Fitness Applet</h1>
       </header>
     );
-  }
 }
 
-class Navigation extends Component {
-  render() {
-    return (
-      <div className="App container">
-        <Navbar fluid collapseOnSelect>
-          <Navbar.Header>
-            <Navbar.Brand>
-            <LinkContainer to="/Statistics">
-                <NavItem>Fitness-Applet</NavItem>
-              </LinkContainer>
-            </Navbar.Brand>
-            <Navbar.Toggle />
-          </Navbar.Header>
+const Navigation =(props) => {
+  return (
+    <div className="App container">
+      <Navbar fluid collapseOnSelect>
+        <Navbar.Header>
+          <Navbar.Brand>
+            <Link to="/Statistics">Fitness-Applet</Link>
+          </Navbar.Brand>
+          <Navbar.Toggle />
+        </Navbar.Header>
+        <Navbar.Collapse>
+          <Nav pullLeft>
+            <LinkContainer to="/PersonalSpace">
+              <NavItem>Personal-Space</NavItem>
+            </LinkContainer>
+            <LinkContainer to="/YourWorkout">
+              <NavItem>Your Workout</NavItem>
+            </LinkContainer>
+            <LinkContainer to="/VersusSpace">
+              <NavItem>Versus-Space</NavItem>
+            </LinkContainer>
+          </Nav>
           <Navbar.Collapse>
-            <Nav pullLeft>
-              <LinkContainer to="/PersonalSpace">
-                <NavItem>Personal-Space</NavItem>
-              </LinkContainer>
-              <LinkContainer to="/YourWorkout">
-                <NavItem>Your Workout</NavItem>
-              </LinkContainer>
-              <LinkContainer to="/VersusSpace">
-                <NavItem>Versus-Space</NavItem>
-              </LinkContainer>
-            </Nav>
-            <Navbar.Collapse>
-              <Navbar.Text pullRight>
-                Signed in as: <Navbar.Link href="#">{this.props.credentials}</Navbar.Link>
-              </Navbar.Text>
-            </Navbar.Collapse>
+            <Navbar.Text pullRight>
+              Signed in as: <Navbar.Link href="#">{props.credentials}</Navbar.Link>
+              <Image thumbnail circle responsive src={props.image} rounded />
+            </Navbar.Text>
           </Navbar.Collapse>
-        </Navbar>
-        <Routing creds={this.props.credentials} />
-      </div>
-    );
-  }
-
+        </Navbar.Collapse>
+      </Navbar>
+      <Routing creds={props.credentials} />
+    </div>
+  );
 }
 
 export default App;

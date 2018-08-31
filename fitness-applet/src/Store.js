@@ -53,7 +53,7 @@ export const fillOfflineSheet = (dataSet, tableName) => {
                         currentDate = cell;
                     } else if ((j - 2) % 4 === 0) {
                         if (userData.hasOwnProperty(j)) {
-                            const weight = parseFloat(cell.replace(/[^\d,\.]/g, "").replace(/,/g, "."));
+                            const weight = parseFloat(cell.replace(/[^\d,.]/g, "").replace(/,/g, "."));
                             dataSheets[currentDate][tableName] = Object.assign({ [userData[j].name]: { weight } }, dataSheets[currentDate][tableName]);
                         }
                     }
@@ -98,7 +98,9 @@ export const fillOfflineSheet = (dataSet, tableName) => {
                     default:
                         break;
                 }
+                return null;
             })
+            return null;
         })
     }
     return null;
@@ -157,16 +159,15 @@ const fillWorkoutDates = (workoutName) => {
 export const getStatistics = (username) => {
     let statistic;
     _.mapValues(dateTable, (value, name) => {
-        let count = 0;
         statistic = {
             ...statistic,
             [name]: 0,
         };
         return _.forEach(value, (date) => {
-            date = date.replace(/[^\d.\.]/g, "");
+            date = date.replace(/[^\d.]/g, "");
             if (dataSheets[date][name].hasOwnProperty(username)) {
                 let set = dataSheets[date][name][username].set;
-                if (typeof (set) != 'undefined') {
+                if (typeof (set) !== 'undefined') {
                     let index = 0;
                     let rep = [''];
                     for (var v of set) {
@@ -182,8 +183,9 @@ export const getStatistics = (username) => {
                     }
                 }
             }
+            return value;
         });
-        return value;
+        
     })
     return statistic;
 }
@@ -292,6 +294,7 @@ export const profileChecker = (profile) => {
         if (curVal.id === id) {
             newUser = false;
         }
+        return null;
     })
     if (newUser) {
         let newUserNumber = (sheetUserJump * Object.keys(userData).length) + 2;

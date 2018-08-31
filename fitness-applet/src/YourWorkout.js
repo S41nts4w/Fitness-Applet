@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { DropDown } from './Selector';
-import { workoutName, getCell, getDateTable, getCellIndex, userData, getWeightsFor } from './Store';
+import { workoutName, getCell, getDateTable, getCellIndex, getWeightsFor } from './Store';
 import { InputComponent } from './Input';
 import { WriteSingleCell } from './SheetWriter'
 
@@ -26,8 +26,8 @@ export class WorkoutTab extends Component {
         return (
             <div>
                 <div>
-                    <DropDown options={workoutName} onUpdate={(e) => { this.setState({ workout: e }); }} />
-                    <DropDown options={getDateTable(this.state.workout)} onUpdate={(e) => { this.setState({ date: e }); }} />
+                    <DropDown options={workoutName} title='workout' onUpdate={(e) => { this.setState({ workout: e }); }} />
+                    <DropDown options={getDateTable(this.state.workout)} title='date' onUpdate={(e) => { this.setState({ date: e }); }} />
                 </div>
                 <div>
                     <h4>Last completed weights: </h4>

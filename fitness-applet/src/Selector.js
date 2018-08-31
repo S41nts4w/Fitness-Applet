@@ -1,31 +1,34 @@
 import React, { Component } from 'react';
+import { DropdownButton, MenuItem } from 'react-bootstrap';
 
 export class DropDown extends Component {
   state = {
-    fieldVal: "Value"
-  }
-  componentDidMount() {
-    this.setState({
-      fieldVal: this.refs.selection.value
-    });
-    this.props.onUpdate(this.refs.selection.value);
+    currentSelection: this.props.title,
   }
   update = (e) => {
-    this.props.onUpdate(e.target.value);
-    this.setState({ fieldVal: e.target.value });
+    this.props.onUpdate(e);
+    this.setState({currentSelection: e});
   }
   render() {
-    let options
-    try {
-      options = this.props.options.map((name) => {
-        return <option key={`option_${name}`} value={name}>{name}</option>;
-      });
-    } catch (error) {
-      console.log(error);
-      options = <option key={`option_date`} value="date">date</option>;
-    }
+    let options;
+      try {
+        options = this.props.options.map((name) => {
+          return <MenuItem key={`keyItem_${name}`} eventKey={name} >{name}</MenuItem>;
+        });
+      } catch (error) {
+        console.log(error);
+        options = <MenuItem eventKey={`option_date`} >date</MenuItem>;
+      }
     return (
-      <select ref="selection" type="number" value={this.state.fieldVal} onChange={this.update} >{options}</select>
+      <DropdownButton
+        title={this.state.currentSelection}
+        bsStyle="default"
+        key={`dropdown_${this.props.title}`}
+        id={`dropdown_workout`}
+        onSelect={this.update}
+      >
+        {options}
+      </DropdownButton>
     )
   }
 }

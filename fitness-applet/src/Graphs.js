@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { LabelList, Brush, BarChart, Bar, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, LineChart } from 'recharts/lib';
-import { workoutName } from './Store';
-import _ from 'lodash';
+import { Brush, BarChart, Bar, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, LineChart } from 'recharts/lib';
 
 const styles = {
   outer: {

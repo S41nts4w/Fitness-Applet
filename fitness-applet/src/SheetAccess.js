@@ -40,6 +40,7 @@ const SheetsDemo = props => (
                                 <Button bsStyle="primary" onClick={authorize}>Authorize<DataFetcher sheetRange={`UserRegister`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="UserRegister" /></Button>
                             )}
                 {signedIn && <DataFetcher sheetRange={`UserRegister`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="UserRegister" />}
+                {signedIn && <DataFetcher sheetRange={`PowerClean${range}`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="PowerClean" />}
                 {signedIn && <DataFetcher sheetRange={`Squat${range}`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="Squat" />}
                 {signedIn && <DataFetcher sheetRange={`Press${range}`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="Press" />}
                 {signedIn && <DataFetcher sheetRange={`BenchPress${range}`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="BenchPress" />}

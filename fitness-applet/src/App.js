@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar, NavItem, Nav, Grid, Col, Image, Row } from 'react-bootstrap';
+import { Navbar, NavItem, Nav, Image } from 'react-bootstrap';
 import logo from './logo.svg';
 import './App.css';
 import { Route, Link } from 'react-router-dom';
@@ -9,7 +9,14 @@ import { VersusTab } from './VersusSpace';
 import { StatisticPage } from './Statistics';
 import { getNames, workoutName } from './Store';
 import { LinkContainer } from 'react-router-bootstrap';
-import { SheetExtractor } from './TestSheetAccess';
+import { SheetExtractor } from './SheetAccess';
+
+const styles = {
+  thumbnail: {
+    width: 50,
+    height: 50
+  },
+}
 
 class App extends Component {
   state = {
@@ -54,15 +61,15 @@ class Routing extends Component {
 }
 
 const HeaderComponent = () => {
-    return (
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1 className="App-title">Fitness Applet</h1>
-      </header>
-    );
+  return (
+    <header className="App-header">
+      <img src={logo} className="App-logo" alt="logo" />
+      <h1 className="App-title">Fitness Applet</h1>
+    </header>
+  );
 }
 
-const Navigation =(props) => {
+const Navigation = (props) => {
   return (
     <div className="App container">
       <Navbar fluid collapseOnSelect>
@@ -87,7 +94,9 @@ const Navigation =(props) => {
           <Navbar.Collapse>
             <Navbar.Text pullRight>
               Signed in as: <Navbar.Link href="#">{props.credentials}</Navbar.Link>
-              <Image thumbnail circle responsive src={props.image} rounded />
+              <label style={styles.thumbnail}>
+                <Image thumbnail circle responsive src={props.image} />
+              </label>
             </Navbar.Text>
           </Navbar.Collapse>
         </Navbar.Collapse>

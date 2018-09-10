@@ -4,9 +4,9 @@ import { Brush, BarChart, Bar, ResponsiveContainer, XAxis, YAxis, CartesianGrid,
 const styles = {
   outer: {
     paddingTop: '10%',
-    paddingBottom: '40%',
+    paddingBottom: '10%',
     position: 'relative',
-    height: 150
+    height: 400
   },
   inner: {
     position: 'absolute',

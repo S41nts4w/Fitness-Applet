@@ -185,7 +185,7 @@ export const getStatistics = (username) => {
             }
             return value;
         });
-        
+
     })
     return statistic;
 }
@@ -289,35 +289,37 @@ export const fillVersusData = (props) => {
 
 export const profileChecker = (profile) => {
     let newUser = true;
-    Object.values(userData).reduce((prevVal, curVal, i) => {
-        let id = profile.getId();
-        if (curVal.id === id) {
-            newUser = false;
+    if (userData.length) {
+        Object.values(userData).reduce((prevVal, curVal, i) => {
+            let id = profile.getId();
+            if (curVal.id === id) {
+                newUser = false;
+            }
+            return null;
+        })
+        if (newUser) {
+            let newUserNumber = (sheetUserJump * Object.keys(userData).length) + 2;
+            userData[newUserNumber] = {
+                "id": profile.getId(),
+                "name": profile.getName(),
+                "sheetScope": String.fromCharCode(("A").charCodeAt(0) + newUserNumber),
+            };
+            let writeID = {
+                value: userData[newUserNumber]["id"],
+                range: `UserRegister!A${Object.keys(userData).length + 1}`,
+            }
+            let writeName = {
+                value: userData[newUserNumber]["name"],
+                range: `UserRegister!B${Object.keys(userData).length + 1}`,
+            }
+            let writeScope = {
+                value: userData[newUserNumber]["sheetScope"],
+                range: `UserRegister!C${Object.keys(userData).length + 1}`,
+            }
+            WriteSingleCell(writeID);
+            WriteSingleCell(writeName);
+            WriteSingleCell(writeScope);
         }
-        return null;
-    })
-    if (newUser) {
-        let newUserNumber = (sheetUserJump * Object.keys(userData).length) + 2;
-        userData[newUserNumber] = {
-            "id": profile.getId(),
-            "name": profile.getName(),
-            "sheetScope": String.fromCharCode(("A").charCodeAt(0) + newUserNumber),
-        };
-        let writeID = {
-            value: userData[newUserNumber]["id"],
-            range: `UserRegister!A${Object.keys(userData).length + 1}`,
-        }
-        let writeName = {
-            value: userData[newUserNumber]["name"],
-            range: `UserRegister!B${Object.keys(userData).length + 1}`,
-        }
-        let writeScope = {
-            value: userData[newUserNumber]["sheetScope"],
-            range: `UserRegister!C${Object.keys(userData).length + 1}`,
-        }
-        WriteSingleCell(writeID);
-        WriteSingleCell(writeName);
-        WriteSingleCell(writeScope);
     }
 }
 

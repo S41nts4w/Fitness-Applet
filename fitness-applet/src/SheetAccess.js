@@ -9,22 +9,6 @@ import { Button } from 'react-bootstrap';
 
 const range = "!A:Q";
 
-// const sheets = (signedIn) => {
-//     if (signedIn) {
-//         return (
-//             <div>
-//                 <DataFetcher sheetRange={`UserRegister`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="UserRegister" />
-//                 <DataFetcher sheetRange={`Squat${range}`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="Squat" />
-//                 <DataFetcher sheetRange={`Press${range}`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="Press" />
-//                 <DataFetcher sheetRange={`BenchPress${range}`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="BenchPress" />
-//                 <DataFetcher sheetRange={`Deadlift${range}`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="Deadlift" />
-//                 <DataFetcher sheetRange={`Bent-Over Barbell Row${range}`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="Bent-Over Barbell Row" />
-//             </div>
-//         )
-//     } else {
-//         return null;
-//     }
-// }
 
 const SheetsDemo = props => (
     <GoogleSheetsApi clientId={props.clientId} apiKey={props.apiKey} scopes={["https://www.googleapis.com/auth/spreadsheets"]}>
@@ -35,9 +19,9 @@ const SheetsDemo = props => (
                 ) : error ? (
                     JSON.stringify(error, null, 2)
                 ) : signedIn ? (
-                    props.loggedIn ? <Button bsStyle="danger" onClick={() => { props.signin(false, getProfile()) }}>Sign Out</Button> : <Button bsStyle="success" onClick={() => { props.signin(true, getProfile()) }}>Sign In</Button>
+                    props.loggedIn ? <Button bsStyle="danger" onClick={signout}>Sign Out</Button> : <Button bsStyle="success" onClick={() => { props.signin(true, getProfile()) }}>Sign In</Button>
                 ) : (
-                                <Button bsStyle="primary" onClick={authorize}>Authorize<DataFetcher sheetRange={`UserRegister`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="UserRegister" /></Button>
+                                <Button bsStyle="primary" onClick={authorize}>Authorize</Button>
                             )}
                 {signedIn && <DataFetcher sheetRange={`UserRegister`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="UserRegister" />}
                 {signedIn && <DataFetcher sheetRange={`PowerClean${range}`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="PowerClean" />}

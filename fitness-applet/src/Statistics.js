@@ -7,7 +7,7 @@ export class StatisticPage extends Component{
         const getData = () =>{
             let test = "";
             test = _.map(getStatistics(this.props.username), (val, key)=> {
-                return <p>{`${key}: ${val}`}</p>;
+                return <p key={`stat_${key}`}>{`${key}: ${val}`}</p>;
             });
             return test;
         }

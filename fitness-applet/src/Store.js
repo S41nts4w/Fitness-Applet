@@ -165,7 +165,9 @@ export const getStatistics = (username) => {
         };
         return _.forEach(value, (date) => {
             date = date.replace(/[^\d.]/g, "");
-            if (dataSheets[date][name].hasOwnProperty(username)) {
+            if(!dataSheets.hasOwnProperty(date)){
+                return 0;
+            }else if (dataSheets[date][name].hasOwnProperty(username)) {
                 let set = dataSheets[date][name][username].set;
                 if (typeof (set) !== 'undefined') {
                     let index = 0;

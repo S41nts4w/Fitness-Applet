@@ -7,10 +7,10 @@ export const userData = {
 };
 
 export const apiKey = {
-        "key": process.env.KEY,
-        "SheetID": process.env.SHEET_ID,
-        "Client-ID": process.env.CLIENT_ID
-    }
+    "key": process.env.KEY,
+    "SheetID": process.env.SHEET_ID,
+    "Client-ID": process.env.CLIENT_ID
+}
 
 export let getNames = () => {
     return Object.values(userData).map(user => user.name);
@@ -130,10 +130,16 @@ export function getWeightsFor(workout, username) {
         }
         if (lastElem[1][workout].hasOwnProperty(username)) {
             let test = `Weight: ${lastElem[1][workout][username].weight}, Set: ${lastElem[1][workout][username].set}`;
-            return test;
+            return {
+                "lastWeight": lastElem[1][workout][username].weight,
+                "lastSet": lastElem[1][workout][username].set
+            };
         }
     }
-    return null;
+    return {
+        "lastWeight": 0,
+        "lastSet": " "
+    };;
 }
 
 const fillWorkoutDates = (workoutName) => {
@@ -171,9 +177,9 @@ export const getStatistics = (username) => {
         };
         return _.forEach(value, (date) => {
             date = date.replace(/[^\d.]/g, "");
-            if(!dataSheets.hasOwnProperty(date)){
+            if (!dataSheets.hasOwnProperty(date)) {
                 return 0;
-            }else if (dataSheets[date][name].hasOwnProperty(username)) {
+            } else if (dataSheets[date][name].hasOwnProperty(username)) {
                 let set = dataSheets[date][name][username].set;
                 if (typeof (set) !== 'undefined') {
                     let index = 0;

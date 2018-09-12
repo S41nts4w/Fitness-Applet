@@ -1,17 +1,22 @@
 import React, { Component } from 'react';
-import { Button } from 'react-bootstrap';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
+
 
 export class InputComponent extends Component {
   state = {
     name: this.props.selName,
     workout: "WorkoutName",
-    set: " ",
+    set: "",
+    rep: 0,
     weight: 0,
     date: this.props.selDate,
   }
   handleButton() {
     let { name, workout } = this.state;
-    this.setState({ weight: this.refs.maxWeight.value });
     this.props.submitted({
       name: name,
       workout: workout,
@@ -21,17 +26,26 @@ export class InputComponent extends Component {
     });
   }
   handleButtonAddSet() {
-    if (parseFloat(this.refs.maxWeight.value) !== this.state.weight) {
+    if (this.state.set.length) {
       this.setState({
-        weight: parseFloat(this.refs.maxWeight.value),
-        set: `${this.refs.reps.value}`
+        set: `${this.state.set}-${this.state.rep}`
       })
-    }else {
+    } else {
       this.setState({
-        set: `${this.state.set}-${this.refs.reps.value}`
+        set: `${this.state.rep}`
       })
     }
   }
+  handleButtonDeleteSet() {
+    this.setState({
+      set: ""
+    })
+  }
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+    });
+  };
   componentDidMount() {
     this.setState({
       name: this.props.selName,
@@ -55,12 +69,36 @@ export class InputComponent extends Component {
     return (
       <div>
         <div>
-          <input ref="maxWeight" type="number" placeholder="Kg" />
-          <input ref="reps" type="number" placeholder="Amount" />
-          <Button bsStyle="primary" onClick={(e) => { this.handleButtonAddSet(); }}>Add Set</Button>
+          <TextField
+            id="ID_Weight"
+            label="Weight"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            placeholder="Kg"
+            margin="normal"
+            type='number'
+            // value={this.state.weight}
+            onChange={this.handleChange('weight')}
+            helperText={`Last weight was: ${this.props.prevWeight}`}
+          />
+          <TextField
+            id="ID_Rep"
+            label="rep"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            placeholder="Reps"
+            margin="normal"
+            type='number'
+            onChange={this.handleChange('rep')}
+            helperText={`Last set was: ${this.props.prevSet}`}
+          />
+          <IconButton mini color="primary" onClick={(e) => { this.handleButtonAddSet(); }}><AddIcon /></IconButton>
+          <IconButton mini color="secondary" onClick={(e) => { this.handleButtonDeleteSet(); }}><DeleteIcon /></IconButton>
           <p>{`Your current Weight: ${this.state.weight} Set: ${this.state.set}`}</p>
         </div>
-        <Button bsStyle="primary" onClick={(e) => { this.handleButton(); }}>Submit</Button>
+        <Button size="large" variant="raised" color="primary" onClick={(e) => { this.handleButton(); }}>Submit</Button>
       </div>
     )
   }

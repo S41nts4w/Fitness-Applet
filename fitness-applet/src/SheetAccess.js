@@ -5,7 +5,8 @@ import DataFetcher from './DynamicSpreadsheet';
 import ApiForm from './ApiForm';
 import apiKey from './apiKey.json';
 import { profileChecker } from './Store';
-import { Button } from 'react-bootstrap';
+import Button from '@material-ui/core/Button'
+// import { Button } from 'react-bootstrap';
 
 const range = "!A:Q";
 
@@ -19,9 +20,9 @@ const SheetsDemo = props => (
                 ) : error ? (
                     JSON.stringify(error, null, 2)
                 ) : signedIn ? (
-                    props.loggedIn ? <Button bsStyle="danger" onClick={signout}>Sign Out</Button> : <Button bsStyle="success" onClick={() => { props.signin(true, getProfile()) }}>Sign In</Button>
+                    props.loggedIn ? <Button size="large" variant="raised" color="secondary" onClick={signout}>Sign Out</Button> : <Button size="large" variant="raised" color="primary" onClick={() => { props.signin(true, getProfile()) }}>Sign In</Button>
                 ) : (
-                                <Button bsStyle="primary" onClick={authorize}>Authorize</Button>
+                                <Button size="large" variant="raised" color="default" onClick={authorize}>Authorize</Button>
                             )}
                 {signedIn && <DataFetcher sheetRange={`UserRegister`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="UserRegister" />}
                 {signedIn && <DataFetcher sheetRange={`PowerClean${range}`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="PowerClean" />}

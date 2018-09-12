@@ -34,11 +34,12 @@
 // }
 
 import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
   button: {
@@ -47,11 +48,11 @@ const styles = theme => ({
   },
   formControl: {
     margin: theme.spacing.unit,
-    minWidth: 120,
+    minWidth: 200,
   },
 });
 
-export class DropDown extends React.Component {
+class DropDown extends React.Component {
   state = {
     currentSelection: this.props.title,
     open: false,
@@ -71,7 +72,7 @@ export class DropDown extends React.Component {
   };
 
   render() {
-    const { title } = this.props;
+    const { title, classes } = this.props;
     let options;
     try {
       options = this.props.options.map((name) => {
@@ -83,10 +84,11 @@ export class DropDown extends React.Component {
     }
 
     return (
-      <form autoComplete="off">
-        <FormControl className={`formControl_${title}`}>
+      // <form autoComplete="off">
+        <FormControl className={this.props.classes.formControl}>
           <InputLabel htmlFor="testSelect_materialUI">{title}</InputLabel>
           <Select
+            autoWidth={false}
             open={this.state.open}
             onClose={this.handleClose}
             onOpen={this.handleOpen}
@@ -100,7 +102,13 @@ export class DropDown extends React.Component {
             {options}
           </Select>
         </FormControl>
-      </form>
+      // </form>
     );
   }
 }
+
+DropDown.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(DropDown);

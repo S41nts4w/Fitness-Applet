@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import { GoogleSheet } from '@lourd/react-google-sheet';
 import apiKey from './apiKey.json';
-import {fillOfflineSheet} from './Store';
+import { fillOfflineSheet} from './Store';
 
 const MyData = ({ data, content }) => {
   fillOfflineSheet(data, content);

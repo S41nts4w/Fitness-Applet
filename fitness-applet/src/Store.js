@@ -6,6 +6,12 @@ const sheetUserJump = 4;
 export const userData = {
 };
 
+export const apiKey = {
+        "key": process.env.KEY,
+        "SheetID": process.env.SHEET_ID,
+        "Client-ID": process.env.CLIENT_ID
+    }
+
 export let getNames = () => {
     return Object.values(userData).map(user => user.name);
 }

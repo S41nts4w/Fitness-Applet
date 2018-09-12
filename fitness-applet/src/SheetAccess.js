@@ -49,9 +49,9 @@ const getProfile = () => {
 
 export class SheetExtractor extends Component {
     state = {
-        apiKey: JSON.parse(JSON.stringify(apiKey.key)),
+        apiKey: apiKey.key,
         clientId:
-            JSON.parse(JSON.stringify(apiKey['Client-ID'])),
+            apiKey['Client-ID'],
         range: "",
     }
     componentDidMount() {

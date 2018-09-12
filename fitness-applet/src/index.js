@@ -9,7 +9,7 @@ import { BrowserRouter} from 'react-router-dom';
 require('babel-polyfill');
 
 ReactDOM.render(
-    <BrowserRouter basename={process.env.PUBLIC_URL}>
+    <BrowserRouter basename={process.env.PUBLIC_URL} >
         <App />
     </BrowserRouter>
     , document.getElementById('root'));

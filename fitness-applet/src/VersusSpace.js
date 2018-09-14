@@ -57,18 +57,18 @@ export class VersusTab extends Component {
     handleGraphChoice(e) {
         switch (e) {
             case 'Bar Graph':
-            this.setState({
-                barGraph: true,
-                otherGraph: false,
-            });
+                this.setState({
+                    barGraph: true,
+                    otherGraph: false,
+                });
                 break;
             case 'Other Graph':
-            this.setState({
-                barGraph: false,
-                otherGraph: true,
-            });
+                this.setState({
+                    barGraph: false,
+                    otherGraph: true,
+                });
                 break;
-        
+
             default:
                 break;
         }
@@ -85,9 +85,15 @@ export class VersusTab extends Component {
         }
     }
     render() {
-        const filterNameOptions = () => {
-            return this.props.userNames.filter(name => { if (name !== this.props.username) { return true; } return false; }).map(name => name);
-        }
+            const FilterNameOptions = () => {
+                try {
+                    return this.props.userNames.filter(name => { if (name !== this.props.username) { return true; } return false; }).map(name => name);
+                } catch (e) {
+                    return [];
+                }
+                
+            }
+
         const FilterData = () => {
             return this.state.versusData.filter(row => {
                 if (Object.keys(row).length > 1) {
@@ -113,7 +119,7 @@ export class VersusTab extends Component {
         return (
             <div>
                 <div>
-                    <UserRadio choiceEvent={(e) => { this.handleNameChoice(e) }} options={filterNameOptions()} />
+                    <UserRadio choiceEvent={(e) => { this.handleNameChoice(e) }} options={FilterNameOptions()} />
                 </div>
                 <ColoredLine color="Grey" />
                 <div>

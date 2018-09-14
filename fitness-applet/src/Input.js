@@ -94,8 +94,8 @@ export class InputComponent extends Component {
             onChange={this.handleChange('rep')}
             helperText={`Last set was: ${this.props.prevSet}`}
           />
-          <IconButton mini color="primary" onClick={(e) => { this.handleButtonAddSet(); }}><AddIcon /></IconButton>
-          <IconButton mini color="secondary" onClick={(e) => { this.handleButtonDeleteSet(); }}><DeleteIcon /></IconButton>
+          <IconButton mini="true" color="primary" onClick={(e) => { this.handleButtonAddSet(); }}><AddIcon /></IconButton>
+          <IconButton mini="true" color="secondary" onClick={(e) => { this.handleButtonDeleteSet(); }}><DeleteIcon /></IconButton>
           <p>{`Your current Weight: ${this.state.weight} Set: ${this.state.set}`}</p>
         </div>
         <Button size="large" variant="raised" color="primary" onClick={(e) => { this.handleButton(); }}>Submit</Button>

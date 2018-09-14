@@ -12,7 +12,7 @@ require('babel-polyfill');
 
 ReactDOM.render(
     <BrowserRouter basename={process.env.PUBLIC_URL} >
-        <App />
+        <FullWidthTabs />
     </BrowserRouter>
     , document.getElementById('root'));
 registerServiceWorker();

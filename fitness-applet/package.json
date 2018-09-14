@@ -20,11 +20,14 @@
     "react-bootstrap": "^0.32.1",
     "react-dom": "^16.4.1",
     "react-google-sheet-connector": "^1.0.1",
+    "react-motion": "^0.5.2",
     "react-radio-buttons": "^1.2.2",
     "react-router-bootstrap": "^0.24.4",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.0.0-next.a671462c",
+    "react-swipeable-views": "^0.12.17",
     "recharts": "^1.1.0",
+    "swipeable-views-react": "^0.6.6",
     "typeface-roboto": "0.0.54"
   },
   "scripts": {

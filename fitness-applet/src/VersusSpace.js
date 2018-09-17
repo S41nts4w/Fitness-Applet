@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { versusData, fillVersusData, workoutName } from './Store';
 import { ChartComponent } from './Graphs';
 import { UserRadio } from './UserRadio';
-import { CheckBoxContainer } from './CheckBoxContainer';
+// import { CheckBoxContainer } from './CheckBoxContainer';
+import MultipleSelect from './CheckBoxContainer';
 
 const ColoredLine = ({ color }) => (
     <hr
@@ -123,7 +124,8 @@ export class VersusTab extends Component {
                 </div>
                 <ColoredLine color="Grey" />
                 <div>
-                    <CheckBoxContainer choiceEvent={(e) => { this.handleWorkoutChoice(e) }} options={this.props.workoutNames} />
+                    {/* <CheckBoxContainer choiceEvent={(e) => { this.handleWorkoutChoice(e) }} options={this.props.workoutNames} /> */}
+                    <MultipleSelect choiceEvent={(e) => { this.handleWorkoutChoice(e) }} options={this.props.workoutNames}/>
                 </div>
                 <ChartComponent workoutNames={GetOptionNames()} otherGraph={this.state.otherGraph} barGraph={this.state.barGraph} data={FilterData()} />
                 <UserRadio choiceEvent={(e) => { this.handleGraphChoice(e) }} options={['Bar Graph', 'Other Graph']} />

@@ -11,7 +11,7 @@ export const apiKey = {
     "SheetID": process.env.SHEET_ID,
     "Client-ID": process.env.CLIENT_ID
 }
-
+export let changeFlag = true;
 export let getNames = () => {
     return Object.values(userData).map(user => user.name);
 }
@@ -25,7 +25,7 @@ export let getCell = (user) => {
     })
     return scope;
 }
-export let workoutName = ["Squat", "Deadlift", "Press", "BenchPress", "Bent-Over Barbell Row", "PowerClean"];
+export let workoutName = ["Squat", "BenchPress", "Bent-Over Barbell Row", "Deadlift", "Press", "PowerClean"];
 let dateTable = { "Squat": [], "Deadlift": [], "Press": [], "BenchPress": [], "Bent-Over Barbell Row": [], "PowerClean": [], };
 let dataSheets = {}
 
@@ -129,7 +129,6 @@ export function getWeightsFor(workout, username) {
             lastElem = sortable.pop();
         }
         if (lastElem[1][workout].hasOwnProperty(username)) {
-            let test = `Weight: ${lastElem[1][workout][username].weight}, Set: ${lastElem[1][workout][username].set}`;
             return {
                 "lastWeight": lastElem[1][workout][username].weight,
                 "lastSet": lastElem[1][workout][username].set
@@ -139,7 +138,7 @@ export function getWeightsFor(workout, username) {
     return {
         "lastWeight": 0,
         "lastSet": " "
-    };;
+    };
 }
 
 const fillWorkoutDates = (workoutName) => {

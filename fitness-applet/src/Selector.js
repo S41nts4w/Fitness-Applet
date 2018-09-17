@@ -85,7 +85,7 @@ class DropDown extends React.Component {
 
     return (
       // <form autoComplete="off">
-        <FormControl className={this.props.classes.formControl}>
+        <FormControl className={classes.formControl}>
           <InputLabel htmlFor="testSelect_materialUI">{title}</InputLabel>
           <Select
             autoWidth={false}

@@ -1,109 +1,130 @@
-import React, { Component } from 'react';
-import { Navbar, NavItem, Nav, Image } from 'react-bootstrap';
-import logo from './logo.svg';
+import React from 'react';
+import { Image } from 'react-bootstrap';
 import './App.css';
-import { Route, Link } from 'react-router-dom';
 import { PersonalSpace } from './PersonalSpace';
 import { WorkoutTab } from './YourWorkout';
 import { VersusTab } from './VersusSpace';
 import { StatisticPage } from './Statistics';
 import { getNames, workoutName } from './Store';
-import { LinkContainer } from 'react-router-bootstrap';
 import { SheetExtractor } from './SheetAccess';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import SwipeableViews from 'react-swipeable-views';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
 
-const styles = {
-  thumbnail: {
-    width: 50,
-    height: 50
-  },
-}
-
-class App extends Component {
-  state = {
-    credentials: "User",
-    accepted: false,
-  }
-
-  render() {
-    const Sheet = (props) => {
-      return <SheetExtractor loggedIn={props.loggedIn} signedin={(accepted, user) => { this.setState({ accepted: accepted, credentials: user.getName(), image: user.getImageUrl() }); }} />
-    }
-    if (this.state.accepted === false) {
-      return (
-        <div className="App">
-          <HeaderComponent />
-          <Sheet loggedIn={false} />
-        </div>
-      );
-    } else if (this.state.accepted === true) {
-      return (
-        <div className="App">
-          <HeaderComponent />
-          <Navigation image={this.state.image} credentials={this.state.credentials} logOut={(e) => { this.setState({ accepted: e }); }} />
-          <Sheet loggedIn={true} />
-        </div>
-      );
-    }
-  }
-}
-
-class Routing extends Component {
-  render() {
+function TabContainer({ children, dir }) {
     return (
-      <div>
-        <Route path="/Statistics" render={(props) => <StatisticPage {...props} username={this.props.creds} />} />
-        <Route path="/PersonalSpace" render={(props) => <PersonalSpace {...props} username={this.props.creds} />} />
-        <Route path="/YourWorkout" render={(props) => <WorkoutTab {...props} username={this.props.creds} />} />
-        <Route path="/VersusSpace" render={(props) => <VersusTab {...props} username={this.props.creds} userNames={getNames()} workoutNames={workoutName} />} />
-      </div>
+        <Typography align='center' component="div" dir={dir}>
+            {children}
+        </Typography>
     );
-  }
 }
 
-const HeaderComponent = () => {
-  return (
-    <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <h1 className="App-title">Fitness Applet</h1>
-    </header>
-  );
+TabContainer.propTypes = {
+    children: PropTypes.node.isRequired,
+    dir: PropTypes.string.isRequired,
+};
+
+const styles = theme => ({
+    root: {
+        backgroundColor: theme.palette.background.paper,
+        // width: 500,
+    },
+    form: {
+        width: '100%', // Fix IE11 issue.
+        marginTop: theme.spacing.unit*7,
+    },
+    layout: {
+        width: 'auto',
+        display: 'block', // Fix IE11 issue.
+        marginLeft: theme.spacing.unit * 3,
+        marginRight: theme.spacing.unit * 3,
+        [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+            width: 400,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+        },
+    },
+});
+
+class FullWidthTabs extends React.Component {
+    state = {
+        value: 0,
+        credentials: "User",
+        accepted: false,
+    };
+
+    handleChange = (event, value) => {
+        this.setState({ value });
+    };
+
+    handleChangeIndex = index => {
+        this.setState({ value: index });
+    };
+
+    render() {
+        const { classes, theme } = this.props;
+        const Sheet = (props) => {
+            return <SheetExtractor loggedIn={props.loggedIn} signedin={(accepted, user) => { this.setState({ accepted: accepted, credentials: user.getName(), image: user.getImageUrl() }); }} />
+        }
+        if (this.state.accepted === false) {
+            return (
+                <div className="App">
+                    {/* <SignIn /> */}
+                    <Sheet loggedIn={false} />
+                </div>
+            );
+        } else if (this.state.accepted === true) {
+            return (
+                <div className={classes.root}>
+                    <AppBar color="default">
+                        <Tabs
+                            value={this.state.value}
+                            onChange={this.handleChange}
+                            indicatorColor="primary"
+                            textColor="primary"
+                            fullWidth
+                            tabItemContainerStyle={classes.form}
+                        >
+                            <Tab label="Statistics" />
+                            <Tab label="Personal-Space" />
+                            <Tab label="Your Workout" />
+                            <Tab label="Versus-Space" />
+                        </Tabs>
+                    </AppBar>
+                                    <SwipeableViews
+                                        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                                        index={this.state.value}
+                                        onChangeIndex={this.handleChangeIndex}
+                                        className={classes.form}
+                                    >
+                                        <TabContainer dir={theme.direction}>
+                                            <StatisticPage username={this.state.credentials} />
+                                        </TabContainer>
+                                        <TabContainer dir={theme.direction}>
+                                            <PersonalSpace username={this.state.credentials} />
+                                        </TabContainer>
+                                        <TabContainer dir={theme.direction}>
+                                            <WorkoutTab username={this.state.credentials} />
+                                        </TabContainer>
+                                        <TabContainer dir={theme.direction}>
+                                            <VersusTab username={this.state.credentials} userNames={getNames()} workoutNames={workoutName} />
+                                        </TabContainer>
+
+                                    </SwipeableViews>
+                                    <Sheet loggedIn={true} />
+                </div>
+            );
+        }
+    }
 }
 
-const Navigation = (props) => {
-  return (
-    <div className="App container">
-      <Navbar fluid collapseOnSelect>
-        <Navbar.Header>
-          <Navbar.Brand>
-            <Link to="/Statistics">Fitness-Applet</Link>
-          </Navbar.Brand>
-          <Navbar.Toggle />
-        </Navbar.Header>
-        <Navbar.Collapse>
-          <Nav pullLeft>
-            <LinkContainer to="/PersonalSpace">
-              <NavItem>Personal-Space</NavItem>
-            </LinkContainer>
-            <LinkContainer to="/YourWorkout">
-              <NavItem>Your Workout</NavItem>
-            </LinkContainer>
-            <LinkContainer to="/VersusSpace">
-              <NavItem>Versus-Space</NavItem>
-            </LinkContainer>
-          </Nav>
-          <Navbar.Collapse>
-            <Navbar.Text pullRight>
-              Signed in as: <Navbar.Link href="#">{props.credentials}</Navbar.Link>
-              <label style={styles.thumbnail}>
-                <Image thumbnail circle responsive src={props.image} />
-              </label>
-            </Navbar.Text>
-          </Navbar.Collapse>
-        </Navbar.Collapse>
-      </Navbar>
-      <Routing creds={props.credentials} />
-    </div>
-  );
-}
+FullWidthTabs.propTypes = {
+    classes: PropTypes.object.isRequired,
+    theme: PropTypes.object.isRequired,
+};
 
-export default App;
+export default withStyles(styles, { withTheme: true })(FullWidthTabs);

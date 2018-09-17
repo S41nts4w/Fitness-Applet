@@ -1,50 +1,101 @@
-import React, { Component } from 'react';
-import { Checkbox } from './Checkbox';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import Chip from '@material-ui/core/Chip';
 
-export class CheckBoxContainer extends Component {
-    constructor(props) {
-        super(props);
+const styles = theme => ({
+  root: {
+    flexWrap: 'wrap',
+  },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120,
+    maxWidth: 300,
+  },
+  chips: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  chip: {
+    margin: theme.spacing.unit / 4,
+  },
+});
 
-        this.state = {
-            checkedItems: new Map(),
-        }
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
-        this.handleChange = this.handleChange.bind(this);
-    }
+class MultipleSelect extends React.Component {
+  state = {
+    name: [],
+  };
 
-    handleChange(e) {
-        const item = e.target.name;
-        const isChecked = e.target.checked;
-        this.setState(prevState => ({ checkedItems: prevState.checkedItems.set(item, isChecked) }));
-    }
-    componentDidUpdate(prevProps, prevState) {
+  handleChange = event => {
+    this.setState({ name: event.target.value });
+  };
+      componentDidUpdate(prevProps, prevState) {
         if (this.state !== prevState) {
-            let returnArray = [];
-            this.state.checkedItems.forEach((value, key) => {
-                if (value === true) {
-                    if (returnArray.length === 0) {
-                        returnArray[0] = key;
-                    } else {
-                        returnArray.push(key);
-                    }
-
-                }
-            })
-            this.props.choiceEvent(returnArray);
+            this.props.choiceEvent(this.state.name);
         }
     }
 
-    render() {
-        const CheckBoxOptions = this.props.options.map(option => {
-            return <label key={`checkBoxOption_${option}`}>
-                {option}
-                <Checkbox name={option} checked={this.state.checkedItems.get(option)} onChange={this.handleChange} />
-            </label>
-        })
-        return (
-            <React.Fragment>
-                {CheckBoxOptions.map(option => option)}
-            </React.Fragment>
-        );
-    }
+  render() {
+    const { classes, theme } = this.props;
+
+    return (
+      <div className={classes.root}>
+        <FormControl className={classes.formControl}>
+          <InputLabel htmlFor="select-multiple-chip">Workout</InputLabel>
+          <Select
+            multiple
+            value={this.state.name}
+            onChange={this.handleChange}
+            input={<Input id="select-multiple-chip" />}
+            renderValue={selected => (
+              <div className={classes.chips}>
+                {selected.map(value => (
+                  <Chip key={value} label={value} className={classes.chip} />
+                ))}
+              </div>
+            )}
+            MenuProps={MenuProps}
+          >
+            {this.props.options.map(name => (
+              <MenuItem
+                key={name}
+                value={name}
+                style={{
+                  fontWeight:
+                    this.state.name.indexOf(name) === -1
+                      ? theme.typography.fontWeightRegular
+                      : theme.typography.fontWeightMedium,
+                }}
+              >
+                {name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
+    );
+  }
 }
+
+MultipleSelect.propTypes = {
+  classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles, { withTheme: true })(MultipleSelect);

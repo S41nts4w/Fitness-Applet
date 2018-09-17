@@ -1,12 +1,29 @@
 import React, { Component } from 'react';
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import CircularIntegration from './Progress';
+
+const styles = theme => ({
+  button: {
+    margin: theme.spacing.unit,
+  },
+  leftIcon: {
+    marginRight: theme.spacing.unit,
+  },
+  rightIcon: {
+    marginLeft: theme.spacing.unit,
+  },
+  iconSmall: {
+    fontSize: 20,
+  },
+});
 
 
-export class InputComponent extends Component {
+class InputComponent extends Component {
   state = {
     name: this.props.selName,
     workout: "WorkoutName",
@@ -22,17 +39,22 @@ export class InputComponent extends Component {
       workout: workout,
       weight: this.state.weight,
       set: this.state.set,
-      date: this.state.date
+      date: this.state.date,
     });
+    this.setState({
+      set: "",
+      rep: 0,
+      weight: 0,
+    })
   }
   handleButtonAddSet() {
     if (this.state.set.length) {
       this.setState({
-        set: `${this.state.set}-${this.state.rep}`
+        set: `${this.state.set}-${this.state.rep}`,
       })
     } else {
       this.setState({
-        set: `${this.state.rep}`
+        set: `${this.state.rep}`,
       })
     }
   }
@@ -98,8 +120,15 @@ export class InputComponent extends Component {
           <IconButton mini="true" color="secondary" onClick={(e) => { this.handleButtonDeleteSet(); }}><DeleteIcon /></IconButton>
           <p>{`Your current Weight: ${this.state.weight} Set: ${this.state.set}`}</p>
         </div>
-        <Button size="large" variant="raised" color="primary" onClick={(e) => { this.handleButton(); }}>Submit</Button>
+        <CircularIntegration changed={this.props.changed} onClick={(e) => { this.handleButton(); }}/>
       </div>
     )
   }
 }
+
+InputComponent.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(InputComponent);
+

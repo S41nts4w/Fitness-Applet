@@ -1,11 +1,10 @@
 import React from 'react';
-import { Image } from 'react-bootstrap';
 import './App.css';
 import { PersonalSpace } from './PersonalSpace';
 import { WorkoutTab } from './YourWorkout';
 import { VersusTab } from './VersusSpace';
 import { StatisticPage } from './Statistics';
-import { getNames, workoutName } from './Store';
+import { getNames, workoutName, changeFlag } from './Store';
 import { SheetExtractor } from './SheetAccess';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -14,6 +13,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
+import MenuAppBar from './Avatar';
 
 function TabContainer({ children, dir }) {
     return (
@@ -35,7 +35,7 @@ const styles = theme => ({
     },
     form: {
         width: '100%', // Fix IE11 issue.
-        marginTop: theme.spacing.unit*7,
+        marginTop: theme.spacing.unit * 7,
     },
     layout: {
         width: 'auto',
@@ -55,6 +55,7 @@ class FullWidthTabs extends React.Component {
         value: 0,
         credentials: "User",
         accepted: false,
+        auth: null,
     };
 
     handleChange = (event, value) => {
@@ -64,22 +65,32 @@ class FullWidthTabs extends React.Component {
     handleChangeIndex = index => {
         this.setState({ value: index });
     };
-
+    handleLogout = () => {
+        this.setState({
+            accepted: false,
+        })
+    }
+    authHandler = (auth) =>{
+        let receivedID = auth.currentUser.Ab.El;
+        if(this.state.auth !== null){
+        let oldID = this.state.auth.currentUser.Ab.El;
+        if(receivedID !== oldID){
+            this.setState({
+                auth: auth,
+                accepted: auth.isSignedIn.Ab,
+            })
+        }}else{
+            this.setState({
+                auth: auth,
+                accepted: auth.isSignedIn.Ab,
+            })
+        }
+    }
     render() {
         const { classes, theme } = this.props;
-        const Sheet = (props) => {
-            return <SheetExtractor loggedIn={props.loggedIn} signedin={(accepted, user) => { this.setState({ accepted: accepted, credentials: user.getName(), image: user.getImageUrl() }); }} />
-        }
-        if (this.state.accepted === false) {
-            return (
-                <div className="App">
-                    {/* <SignIn /> */}
-                    <Sheet loggedIn={false} />
-                </div>
-            );
-        } else if (this.state.accepted === true) {
-            return (
-                <div className={classes.root}>
+        return (
+            <div>
+                {this.state.accepted && <div className={classes.root}>
                     <AppBar color="default">
                         <Tabs
                             value={this.state.value}
@@ -87,38 +98,39 @@ class FullWidthTabs extends React.Component {
                             indicatorColor="primary"
                             textColor="primary"
                             fullWidth
-                            tabItemContainerStyle={classes.form}
                         >
                             <Tab label="Statistics" />
                             <Tab label="Personal-Space" />
                             <Tab label="Your Workout" />
                             <Tab label="Versus-Space" />
+                            <MenuAppBar loggedOut={this.handleLogout} image={this.state.image} />
                         </Tabs>
-                    </AppBar>
-                                    <SwipeableViews
-                                        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                                        index={this.state.value}
-                                        onChangeIndex={this.handleChangeIndex}
-                                        className={classes.form}
-                                    >
-                                        <TabContainer dir={theme.direction}>
-                                            <StatisticPage username={this.state.credentials} />
-                                        </TabContainer>
-                                        <TabContainer dir={theme.direction}>
-                                            <PersonalSpace username={this.state.credentials} />
-                                        </TabContainer>
-                                        <TabContainer dir={theme.direction}>
-                                            <WorkoutTab username={this.state.credentials} />
-                                        </TabContainer>
-                                        <TabContainer dir={theme.direction}>
-                                            <VersusTab username={this.state.credentials} userNames={getNames()} workoutNames={workoutName} />
-                                        </TabContainer>
 
-                                    </SwipeableViews>
-                                    <Sheet loggedIn={true} />
-                </div>
-            );
-        }
+                    </AppBar>
+                    <SwipeableViews
+                        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                        index={this.state.value}
+                        onChangeIndex={this.handleChangeIndex}
+                        className={classes.form}
+                    >
+                        <TabContainer dir={theme.direction}>
+                            <StatisticPage username={this.state.credentials} />
+                        </TabContainer>
+                        <TabContainer dir={theme.direction}>
+                            <PersonalSpace username={this.state.credentials} />
+                        </TabContainer>
+                        <TabContainer dir={theme.direction}>
+                            <WorkoutTab username={this.state.credentials} />
+                        </TabContainer>
+                        <TabContainer dir={theme.direction}>
+                            <VersusTab username={this.state.credentials} userNames={getNames()} workoutNames={workoutName} />
+                        </TabContainer>
+
+                    </SwipeableViews>
+                </div>}
+                <SheetExtractor getAuth={(e)=>{this.authHandler(e)}} loadSheets={changeFlag} signedin={(accepted, user) => { this.setState({ accepted: accepted, credentials: user.username, image: user.image }); }} />
+            </div>
+        );
     }
 }
 

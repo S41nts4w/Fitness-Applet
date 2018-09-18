@@ -43,8 +43,6 @@ class InputComponent extends Component {
     });
     this.setState({
       set: "",
-      rep: 0,
-      weight: 0,
     })
   }
   handleButtonAddSet() {

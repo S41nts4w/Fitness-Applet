@@ -11,10 +11,11 @@ export const apiKey = {
     "SheetID": process.env.SHEET_ID,
     "Client-ID": process.env.CLIENT_ID
 }
-export let changeFlag = true;
+export let changeFlag = true;                          // Debugging without fetching data from the server
 export let getNames = () => {
     return Object.values(userData).map(user => user.name);
 }
+let timeStamp;
 
 export let getCell = (user) => {
     let scope;
@@ -43,7 +44,7 @@ export const getCellIndex = (workout, date) => {
     return index;
 }
 export const fillOfflineSheet = (dataSet, tableName) => {
-    if (tableName !== "UserRegister") {
+    if (tableName !== "UserRegister" && tableName !== "changedFlag") {
         let currentDate = "";
         dataSet.slice(2).map((row, i) => {
             row.map((cell, j) => {
@@ -108,6 +109,14 @@ export const fillOfflineSheet = (dataSet, tableName) => {
             })
             return null;
         })
+    }else if(tableName === 'changedFlag'){
+        let stamp = JSON.stringify(dataSet);
+            if(stamp !== timeStamp){
+                changeFlag = true;       // commenting for debugging
+                timeStamp = stamp;
+            }else{
+                changeFlag = false;
+            }
     }
     return null;
 }

@@ -27,14 +27,15 @@ const SheetsDemo = props => (
                 ) : signedIn ? (
                     (<div>
                         {props.getAuth(window.gapi.auth2.getAuthInstance())}
-                        <Button size="large" variant="raised" color="default" onClick={signout}>logOut</Button>
+                        <Button size="large" variant="raised" color="default" onClick={(e)=>{props.handleLogout(e); signout(e)}}>logOut</Button>
                     </div>)
                 ) : (
                                 <Button size="large" variant="raised" color="default" onClick={authorize}>Authorize</Button>
                             )
                 }
+                {signedIn && getMeta()}
                 {signedIn && <DataFetcher sheetRange={`changedFlag!A1`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="changedFlag" />}
-                {/* {signedIn && props.signin(true, getProfile())} */}
+                {signedIn && props.getAuth(window.gapi.auth2.getAuthInstance())}
                 {props.loadSheets && signedIn && (
                     <div>
                         <DataFetcher sheetRange={`UserRegister`} sheetId={JSON.parse(JSON.stringify(apiKey.SheetID))} content="UserRegister" />
@@ -54,10 +55,6 @@ const SheetsDemo = props => (
 SheetsDemo.propTypes = {
     clientId: PropTypes.string.isRequired,
     apiKey: PropTypes.string.isRequired,
-}
-
-const auth = (auth, login) => {
-    login.signin(true, { username: "none", image: "none" });
 }
 
 const getProfile = () => {
@@ -125,6 +122,7 @@ export class SheetExtractor extends Component {
                         loadSheets={this.props.loadSheets}
                         signin={(accepted, profile) => { this.props.signedin(accepted, profile) }}
                         getAuth={(auth)=>this.props.getAuth(auth)}
+                        handleLogout={(e)=>this.props.handleLogout(e)}
                     />
                 ) : (
                         <ApiForm onSubmit={this.handleSubmit} init={this.state} />

@@ -7,10 +7,17 @@ export class PersonalSpace extends Component {
     dataSet: data
   }
   componentDidMount(){
-    fillData(this.props.username);
     this.setState({
-      dataSet: data
+      dataSet: fillData(this.props.username)
     })
+  }
+  componentDidUpdate(prevProps, prevState){
+    let testData = fillData(this.props.username);
+    if(prevState.dataSet.length!==testData.length){
+      this.setState({
+        dataSet: data
+      })
+    }
   }
   
   render() {

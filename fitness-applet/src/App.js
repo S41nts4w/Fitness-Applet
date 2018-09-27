@@ -56,6 +56,7 @@ class FullWidthTabs extends React.Component {
         credentials: "User",
         accepted: false,
         auth: null,
+        image: null,
     };
 
     handleChange = (event, value) => {
@@ -65,25 +66,42 @@ class FullWidthTabs extends React.Component {
     handleChangeIndex = index => {
         this.setState({ value: index });
     };
-    handleLogout = () => {
-        this.setState({
-            accepted: false,
-        })
+    handleLogout(e){
+        if (this.state.accepted) {
+            this.setState({
+                accepted: false,
+            })
+        }
     }
-    authHandler = (auth) =>{
-        let receivedID = auth.currentUser.Ab.El;
-        if(this.state.auth !== null){
-        let oldID = this.state.auth.currentUser.Ab.El;
-        if(receivedID !== oldID){
+    authHandler = (auth) => {
+        let profile = auth.currentUser.get().getBasicProfile();
+        let receivedID = profile.getId();
+        if (this.state.auth !== null) {
+            let oldID = this.state.auth.currentUser.Ab.El;
+            if (receivedID !== oldID) {
+                this.setState({
+                    credentials: profile.getName(),
+                    auth: auth,
+                    accepted: auth.isSignedIn.Ab,
+                    image: profile.getImageUrl(),
+                })
+            }
+        } else {
             this.setState({
+                credentials: profile.getName(),
                 auth: auth,
                 accepted: auth.isSignedIn.Ab,
+                image: profile.getImageUrl(),
             })
-        }}else{
-            this.setState({
-                auth: auth,
-                accepted: auth.isSignedIn.Ab,
-            })
+        }
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.accepted) {
+            if (!this.state.auth.isSignedIn.Ab) {
+                this.setState({
+                    accepted: false,
+                })
+            }
         }
     }
     render() {
@@ -103,7 +121,7 @@ class FullWidthTabs extends React.Component {
                             <Tab label="Personal-Space" />
                             <Tab label="Your Workout" />
                             <Tab label="Versus-Space" />
-                            <MenuAppBar loggedOut={this.handleLogout} image={this.state.image} />
+                            <MenuAppBar loggedOut={(e)=>this.handleLogout(e)} image={this.state.image} />
                         </Tabs>
 
                     </AppBar>
@@ -128,7 +146,7 @@ class FullWidthTabs extends React.Component {
 
                     </SwipeableViews>
                 </div>}
-                <SheetExtractor getAuth={(e)=>{this.authHandler(e)}} loadSheets={changeFlag} signedin={(accepted, user) => { this.setState({ accepted: accepted, credentials: user.username, image: user.image }); }} />
+                <SheetExtractor handleLogout={(e)=>this.handleLogout(e)} getAuth={(e) => { this.authHandler(e) }} loadSheets={changeFlag} signedin={(accepted, user) => { this.setState({ accepted: accepted, credentials: user.username, image: user.image }); }} />
             </div>
         );
     }

@@ -248,7 +248,7 @@ export const fillData = (username) => {
     });
     data = [];
     sortable.map((entry, i) => { return entry.slice(1).map(cell => data[i] = Object.assign(cell, data[i])) });
-    return null;
+    return data;
 }
 
 export const fillVersusData = (props) => {

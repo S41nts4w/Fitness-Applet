@@ -14,6 +14,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import MenuAppBar from './Avatar';
+import Paper from '@material-ui/core/Paper';
 
 function TabContainer({ children, dir }) {
     return (
@@ -31,7 +32,7 @@ TabContainer.propTypes = {
 const styles = theme => ({
     root: {
         backgroundColor: theme.palette.background.paper,
-        // width: 500,
+        fontSize: 15,
     },
     form: {
         width: '100%', // Fix IE11 issue.
@@ -66,7 +67,7 @@ class FullWidthTabs extends React.Component {
     handleChangeIndex = index => {
         this.setState({ value: index });
     };
-    handleLogout(e){
+    handleLogout(e) {
         if (this.state.accepted) {
             this.setState({
                 accepted: false,
@@ -106,10 +107,11 @@ class FullWidthTabs extends React.Component {
     }
     render() {
         const { classes, theme } = this.props;
+        const { value } = this.state;
         return (
-            <div>
+            <div fontSize="2rem">
                 {this.state.accepted && <div className={classes.root}>
-                    <AppBar color="default">
+                    <Paper className={classes.root} style={{'font-size': '18px'}}>
                         <Tabs
                             value={this.state.value}
                             onChange={this.handleChange}
@@ -121,11 +123,25 @@ class FullWidthTabs extends React.Component {
                             <Tab label="Personal-Space" />
                             <Tab label="Your Workout" />
                             <Tab label="Versus-Space" />
-                            <MenuAppBar loggedOut={(e)=>this.handleLogout(e)} image={this.state.image} />
+                            <MenuAppBar loggedOut={(e) => this.handleLogout(e)} image={this.state.image} />
                         </Tabs>
 
-                    </AppBar>
-                    <SwipeableViews
+                    </Paper>
+
+                    {value === 0 && <TabContainer>
+                        <StatisticPage username={this.state.credentials} />
+                    </TabContainer>}
+                    {value === 1 && <TabContainer>
+                        <PersonalSpace username={this.state.credentials} />
+                    </TabContainer>}
+                    {value === 2 && <TabContainer>
+                        <WorkoutTab username={this.state.credentials} />
+                    </TabContainer>}
+                    {value === 3 && <TabContainer>
+                        <VersusTab username={this.state.credentials} userNames={getNames()} workoutNames={workoutName} />
+                    </TabContainer>}
+
+                    {/* <SwipeableViews
                         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                         index={this.state.value}
                         onChangeIndex={this.handleChangeIndex}
@@ -144,9 +160,11 @@ class FullWidthTabs extends React.Component {
                             <VersusTab username={this.state.credentials} userNames={getNames()} workoutNames={workoutName} />
                         </TabContainer>
 
-                    </SwipeableViews>
+                    </SwipeableViews> */}
                 </div>}
-                <SheetExtractor handleLogout={(e)=>this.handleLogout(e)} getAuth={(e) => { this.authHandler(e) }} loadSheets={changeFlag} signedin={(accepted, user) => { this.setState({ accepted: accepted, credentials: user.username, image: user.image }); }} />
+                <div align="center" >
+                    <SheetExtractor handleLogout={(e) => this.handleLogout(e)} getAuth={(e) => { this.authHandler(e) }} loadSheets={changeFlag} signedin={(accepted, user) => { this.setState({ accepted: accepted, credentials: user.username, image: user.image }); }} />
+                </div>
             </div>
         );
     }

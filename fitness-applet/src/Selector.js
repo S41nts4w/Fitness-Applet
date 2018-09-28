@@ -76,11 +76,11 @@ class DropDown extends React.Component {
     let options;
     try {
       options = this.props.options.map((name) => {
-        return <MenuItem key={`keyItem_${name}`} value={name} >{name}</MenuItem>;
+        return <option key={`keyItem_${name}`} value={name} >{name}</option>;
       });
     } catch (error) {
       console.log(error);
-      options = <MenuItem eventKey={`option_date`} >date</MenuItem>;
+      options = <option eventKey={`option_date`} >date</option>;
     }
 
     return (
@@ -88,6 +88,7 @@ class DropDown extends React.Component {
         <FormControl className={classes.formControl}>
           <InputLabel htmlFor="testSelect_materialUI">{title}</InputLabel>
           <Select
+            native
             autoWidth={false}
             open={this.state.open}
             onClose={this.handleClose}
